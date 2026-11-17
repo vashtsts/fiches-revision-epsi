@@ -213,6 +213,9 @@ li { margin: 4px 0; }
   <div class="card"><h4>Axe 4 · Environnement <span class="tag">cours 5</span></h4><p>Contraintes réglementaires, physiques et organisationnelles. Pas encore vu.</p></div>
 </div>
 
+<div class="trap"><strong>Ce qui tombe à l'examen</strong>
+Un diagramme de flux de données à dessiner (draw.io ou équivalent), avec les zones de confiance. Voir la partie 3 : la méthode, les pièges du schéma du cours et une version corrigée. Le module a un second cours, sur l'ingénierie des exigences, qui a sa propre fiche.</div>
+
 <div class="key"><strong>Le fil qui relie tout</strong>
 Un <em>actif</em> a de la valeur, un <em>flux</em> est une porte vers lui, un <em>acteur</em> veut ouvrir cette porte. Un risque apparaît quand les trois se rencontrent : quelqu'un d'intéressé, un chemin pour passer, quelque chose qui vaut la peine.</div>
 
@@ -246,6 +249,17 @@ Un <em>actif</em> a de la valeur, un <em>flux</em> est une porte vers lui, un <e
 <h3>Qu'est-ce qu'un risque ?</h3>
 <p>La définition de l'ISO 31000 tient en une ligne : un risque est l'<strong>effet de l'incertitude sur les objectifs</strong>. Appliqué au SI : la possibilité qu'un événement redouté survienne et affecte les missions de l'organisation. Le mot important est « objectifs » : un risque se mesure toujours par rapport au métier, jamais dans l'absolu.</p>
 <div class="formula">Niveau de risque = vraisemblance × gravité</div>
+<p>Le prof rappelle à l'oral qu'une <strong>organisation</strong> est un ensemble de personnes qui poursuivent un objectif commun. Le SI est au service de cet objectif, pas l'inverse : c'est pour cela qu'un risque se juge toujours à l'aune du métier.</p>
+
+<h3>Que fait-on d'un risque ?</h3>
+<p>Le module s'arrête avant le traitement, mais le prof l'a évoqué en séance. Les ressources étant limitées, on commence par les risques les plus élevés. Pour chacun, quatre options, qui peuvent se combiner (EBIOS RM et ISO/IEC 27005 emploient les mêmes) :</p>
+<div class="grid">
+  <div class="card"><h4>Réduire</h4><p>Des mesures qui baissent la vraisemblance ou l'impact : corriger une faille, sauvegarder, filtrer.</p></div>
+  <div class="card"><h4>Éviter</h4><p>Supprimer l'activité qui expose : ne pas mettre un service en ligne, abandonner une fonction.</p></div>
+  <div class="card"><h4>Transférer</h4><p>Faire porter tout ou partie du risque par un tiers : assurance cyber, clauses contractuelles.</p></div>
+  <div class="card"><h4>Accepter</h4><p>Une décision formelle de la direction de garder le risque, en général faible ou résiduel.</p></div>
+</div>
+<p>Attention au vocabulaire : on dit <em>traiter</em> un risque, pas le « diminuer ». Une seule des quatre options le réduit vraiment. La priorisation dit <em>lesquels</em> on traite ; ces options disent <em>comment</em>.</p>
 
 <h3>Six notions à ne jamais confondre</h3>
 <p>Une analogie aide à les fixer : votre appartement. Les bijoux sont l'<em>actif</em>, le cambrioleur la <em>menace</em>, la fenêtre restée ouverte la <em>vulnérabilité</em>. La perte des bijoux est l'<em>impact</em>, la probabilité qu'un cambrioleur passe dans votre rue la <em>vraisemblance</em>. Le <em>risque</em>, c'est la combinaison des deux dernières.</p>
@@ -365,6 +379,8 @@ Le risque se mesure à la valeur de ce qu'il menace. Sans inventaire valorisé, 
 <tr><td>Ce qu'ils portent</td><td>La <strong>valeur</strong>, souvent immatérielle</td><td>Les <strong>vulnérabilités</strong></td></tr>
 </table></div>
 <p>Phrase à retenir : un attaquant ne vole pas « le métier », il passe par un serveur, un compte, un prestataire. C'est pourquoi les vulnérabilités sont toujours sur les supports.</p>
+<p><strong>Donnée ou information ?</strong> Une <em>donnée</em> est un fait brut sans contexte (« 14 h », un numéro de commande seul). Une <em>information</em> est une donnée mise en contexte, qui prend de la valeur (« la commande 1234 doit partir avant 14 h »). L'actif essentiel, c'est l'information elle-même, indépendamment de l'endroit où elle est stockée : la grille tarifaire est l'actif essentiel, le serveur de fichiers qui la contient en est un support. Le prof dit que les actifs essentiels sont « souvent » immatériels ; dans le vocabulaire strict d'EBIOS RM, ils le sont toujours, puisqu'une valeur métier est une information ou un processus.</p>
+<p>Sur les 4 couches vues plus bas, la ligne de partage passe <strong>entre le fonctionnel et l'applicatif</strong> : métier et fonctionnel sont des actifs essentiels, applicatif et infrastructure des actifs supports.</p>
 
 <div class="table-wrap"><table>
 <tr><th>Actif essentiel</th><th>Exemple HexaFret</th></tr>
@@ -523,6 +539,67 @@ Les flux <strong>techniques et d'administration</strong> sont à la fois les plu
 <p>Partir du métier (les processus clés issus de la cartographie des actifs), lister les échanges, positionner les zones de confiance, tracer le diagramme de flux de données, qualifier les flux et marquer ceux à risque. On cherche les échanges porteurs de valeur ou de risque, pas une matrice de filtrage réseau exhaustive.</p>
 <p>Conventions du diagramme de flux : entité externe sur fond sombre, processus à contour arrondi, stockage entre deux filets (haut et bas), frontière de confiance en pointillés.</p>
 
+<div class="trap"><strong>À l'examen : un diagramme de flux à dessiner</strong>
+D'après tes notes de séance, il faudra modéliser un flux de données sous forme de diagramme, avec draw.io (diagrams.net) ou un outil équivalent. Autre point noté en séance : le diagramme HexaFret du support est <strong>volontairement faux</strong>, le prof l'a dit. Il ne faut donc pas le recopier. La liste officielle des erreurs n'a pas été donnée ; voici les quatre qui ressortent de la fiche HexaFret :
+<ol>
+  <li>L'<strong>ERP</strong> est dessiné dans le SI interne, alors que c'est un SaaS hébergé chez un fournisseur : il est hors de la frontière.</li>
+  <li>« <strong>ERP / WMS</strong> » forment un seul nœud, alors que ce sont deux systèmes hébergés différemment : les fusionner cache une frontière.</li>
+  <li>Le flux de prompts vers l'API LLM part du <strong>portail</strong>, alors que c'est le <strong>chatbot</strong> qui appelle le modèle. Or le chatbot est absent du schéma.</li>
+  <li>Les bordereaux EDI partent de l'ERP/WMS, alors que l'affectation aux transporteurs relève du <strong>TMS</strong>, absent lui aussi.</li>
+</ol>
+Le réflexe à avoir pour chaque élément : <em>de quel côté de la frontière est-il vraiment, et qui émet vraiment ce flux ?</em></div>
+
+<p>Voici une version corrigée qui applique ces quatre points. C'est une proposition faite à partir de la fiche HexaFret, non validée par le prof. Les flux en rouge traversent la frontière de confiance : ce sont eux qu'on qualifie en priorité.</p>
+<svg viewBox="0 0 760 400" role="img" aria-label="Diagramme de flux HexaFret corrigé : client B2B, portail, chatbot, base, WMS et TMS, avec les flux vers l'ERP SaaS, le transporteur et l'API LLM qui traversent la frontière de confiance.">
+  <defs>
+    <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+    <marker id="fr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--c)"/></marker>
+  </defs>
+  <rect x="190" y="14" width="380" height="372" rx="10" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="380" y="34" text-anchor="middle" class="s-acc">Frontière de confiance · SI interne</text>
+  <rect x="8" y="150" width="150" height="54" rx="2" fill="var(--text)"/>
+  <text x="83" y="182" text-anchor="middle" fill="var(--bg)" font-size="14" font-weight="700">Client B2B</text>
+  <rect x="600" y="50" width="152" height="54" rx="2" fill="var(--text)"/>
+  <text x="676" y="74" text-anchor="middle" fill="var(--bg)" font-size="14" font-weight="700">ERP SaaS</text>
+  <text x="676" y="93" text-anchor="middle" fill="var(--bg)" font-size="11">chez l'éditeur</text>
+  <rect x="600" y="170" width="152" height="54" rx="2" fill="var(--text)"/>
+  <text x="676" y="202" text-anchor="middle" fill="var(--bg)" font-size="14" font-weight="700">Transporteur</text>
+  <rect x="600" y="296" width="152" height="54" rx="2" fill="var(--text)"/>
+  <text x="676" y="320" text-anchor="middle" fill="var(--bg)" font-size="14" font-weight="700">API LLM</text>
+  <text x="676" y="339" text-anchor="middle" fill="var(--bg)" font-size="11">fournisseur externe</text>
+  <rect x="212" y="50" width="150" height="46" rx="16" class="s-box-acc"/>
+  <text x="287" y="78" text-anchor="middle" class="s-txt" font-weight="700">Portail B2B</text>
+  <rect x="212" y="170" width="150" height="46" rx="16" class="s-box-acc"/>
+  <text x="287" y="198" text-anchor="middle" class="s-txt" font-weight="700">Chatbot</text>
+  <rect x="412" y="50" width="140" height="46" rx="16" class="s-box-acc"/>
+  <text x="482" y="78" text-anchor="middle" class="s-txt" font-weight="700">WMS</text>
+  <rect x="412" y="170" width="140" height="46" rx="16" class="s-box-acc"/>
+  <text x="482" y="198" text-anchor="middle" class="s-txt" font-weight="700">TMS</text>
+  <line x1="212" y1="300" x2="362" y2="300" stroke="var(--text)" stroke-width="1.5"/>
+  <line x1="212" y1="346" x2="362" y2="346" stroke="var(--text)" stroke-width="1.5"/>
+  <text x="287" y="320" text-anchor="middle" class="s-txt" font-weight="700">Base clients</text>
+  <text x="287" y="337" text-anchor="middle" class="s-sub">et commandes</text>
+  <line x1="158" y1="168" x2="210" y2="82" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
+  <text x="120" y="118" class="s-sub">commande</text>
+  <line x1="158" y1="186" x2="210" y2="192" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
+  <text x="128" y="226" class="s-sub">question</text>
+  <line x1="362" y1="73" x2="410" y2="73" class="s-line" marker-end="url(#fa)"/>
+  <text x="386" y="64" text-anchor="middle" class="s-sub">ordre</text>
+  <line x1="352" y1="170" x2="420" y2="98" class="s-line" marker-end="url(#fa)"/>
+  <text x="372" y="132" class="s-sub">statut</text>
+  <line x1="482" y1="96" x2="482" y2="168" class="s-line" marker-end="url(#fa)"/>
+  <text x="490" y="138" class="s-sub">colis prêts</text>
+  <line x1="440" y1="96" x2="364" y2="298" class="s-line" marker-end="url(#fa)"/>
+  <text x="392" y="262" class="s-sub">lecture / écriture</text>
+  <line x1="552" y1="73" x2="598" y2="73" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
+  <text x="575" y="64" text-anchor="middle" class="s-sub">volumes</text>
+  <line x1="552" y1="193" x2="598" y2="193" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
+  <text x="575" y="184" text-anchor="middle" class="s-sub">EDI</text>
+  <line x1="350" y1="216" x2="598" y2="318" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
+  <text x="470" y="290" class="s-sub" fill="var(--c)">prompts, données client</text>
+</svg>
+<p>On voit tout de suite les cinq flux qui franchissent la frontière : deux entrent depuis Internet (commande, question), trois sortent vers des tiers (volumes vers l'ERP SaaS, bordereaux EDI vers le transporteur, prompts et données personnelles vers le fournisseur du LLM). Pour compléter à l'examen : les flux d'administration de l'infogérant vers le WMS et les sauvegardes, les plus oubliés.</p>
+
 <h3>Les zones de confiance</h3>
 <p>Une <strong>zone de confiance</strong> est un ensemble homogène où tout le monde a à peu près le même niveau de confiance et de protection. Une <strong>frontière</strong>, c'est l'endroit où l'on passe de l'une à l'autre, comme une douane : c'est là qu'il faut contrôler.</p>
 <div class="grid">
@@ -584,6 +661,7 @@ Les flux <strong>techniques et d'administration</strong> sont à la fois les plu
 <tr><td>LLM09</td><td>Désinformation</td><td>Sorties</td></tr>
 <tr><td>LLM10</td><td>Consommation non bornée</td><td>API d'inférence</td></tr>
 </table></div>
+<p>Nuance : l'édition 2025 n'a plus de catégorie dédiée au vol de modèle. L'<em>extraction de modèle</em> (vecteur du tableau précédent) se rattache désormais à LLM10, la consommation non bornée, puisqu'elle passe par des requêtes massives.</p>
 <p><em>Prompt système</em> : les consignes cachées que l'entreprise donne au modèle avant toute question. <em>Embeddings</em> : la traduction d'un texte en une liste de nombres qui permet de retrouver les textes proches par le sens ; c'est le moteur de recherche du RAG.</p>
 
 <h3>Six référentiels pour l'IA</h3>
@@ -778,6 +856,8 @@ Tout attribuer aux « hackers ». Oublier les internes et les erreurs. Confondre
   <li>Une source de risque s'analyse toujours avec son objectif visé : le couple SR/OV.</li>
   <li>Une partie prenante n'est pas un attaquant, c'est un chemin possible.</li>
   <li>Dans la formule de menace d'une partie prenante, la maturité et la confiance sont au <strong>dénominateur</strong>.</li>
+  <li>Le diagramme de flux HexaFret du support est <strong>volontairement faux</strong> : ne pas le recopier à l'examen.</li>
+  <li>On <em>traite</em> un risque (réduire, éviter, transférer, accepter) ; seule la première option le réduit.</li>
 </ol>
 
 <!-- ============================================================ -->

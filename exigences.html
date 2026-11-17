@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Révision ingénierie des exigences</title>
+<meta name="description" content="Fiche de révision du cours Ingénierie des besoins et des exigences (référentiel IREB), module Sécurité d'un SI.">
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #efede6;
+  --text: #1e2124;
+  --muted: #5c6166;
+  --border: #dcd9cf;
+  --accent: #1f6f8b;
+  --accent-soft: #e2eff3;
+  --warn: #9a4a0b;
+  --warn-soft: #fbeedd;
+  --ok: #2d6a3e;
+  --ok-soft: #e4f1e7;
+  --d: #2563a8; --i: #7a3fa0; --c: #b0372b; --p: #2d7a4b;
+  --shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181b; --surface: #1d2125; --surface-2: #252a2f; --text: #e7e9eb; --muted: #a2a9b0;
+    --border: #343a40; --accent: #6cc0dc; --accent-soft: #1d3540; --warn: #f0a35c; --warn-soft: #3a2a1a;
+    --ok: #79c58f; --ok-soft: #1c3324; --d: #6aa6ec; --i: #c08ae0; --c: #ef7d70; --p: #6fca95;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181b; --surface: #1d2125; --surface-2: #252a2f; --text: #e7e9eb; --muted: #a2a9b0;
+  --border: #343a40; --accent: #6cc0dc; --accent-soft: #1d3540; --warn: #f0a35c; --warn-soft: #3a2a1a;
+  --ok: #79c58f; --ok-soft: #1c3324; --d: #6aa6ec; --i: #c08ae0; --c: #ef7d70; --p: #6fca95;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top { padding: 40px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.kicker { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-size: clamp(26px, 6vw, 36px); line-height: 1.2; margin: 6px 0 10px; }
+h2 { font-size: 24px; margin: 56px 0 8px; padding-top: 8px; scroll-margin-top: 70px; }
+h2 .num { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 18px; margin: 32px 0 8px; scroll-margin-top: 70px; }
+p { margin: 10px 0; }
+.lead { color: var(--muted); font-size: 17px; }
+a { color: var(--accent); }
+nav.toc {
+  position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--border); padding: 8px 0; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+  overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;
+}
+nav.toc a {
+  display: inline-block; text-decoration: none; color: var(--text); font-size: 14px;
+  padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); margin-right: 6px; background: var(--surface);
+}
+nav.toc a:hover { border-color: var(--accent); color: var(--accent); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; margin: 14px 0; box-shadow: var(--shadow);
+}
+.key {
+  background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.key strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); margin-bottom: 2px; }
+.trap {
+  background: var(--warn-soft); border-left: 4px solid var(--warn); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.trap strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--warn); margin-bottom: 2px; }
+.ex {
+  background: var(--ok-soft); border-left: 4px solid var(--ok); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.ex strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--ok); margin-bottom: 2px; }
+.table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.n, th.n { text-align: center; white-space: nowrap; }
+.grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 12px 0; }
+.grid .card { margin: 0; }
+.card h4 { margin: 0 0 4px; font-size: 15px; }
+.card p { margin: 4px 0 0; font-size: 14.5px; color: var(--muted); }
+.tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); margin-right: 4px; }
+.D { color: var(--d); } .I { color: var(--i); } .C { color: var(--c); } .P { color: var(--p); }
+.formula {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--surface-2);
+  border-radius: 6px; padding: 10px 12px; margin: 10px 0; font-size: 15px; overflow-x: auto;
+}
+dl.gloss { margin: 12px 0; }
+dl.gloss dt { font-weight: 700; margin-top: 12px; }
+dl.gloss dd { margin: 2px 0 0 0; color: var(--text); }
+dl.gloss dd .full { color: var(--muted); font-style: italic; }
+details {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; margin: 8px 0;
+}
+details summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 6px; }
+svg { max-width: 100%; height: auto; display: block; margin: 12px auto; }
+.svg-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 12px 0; }
+.svg-wrap svg { min-width: 600px; margin: 0 auto; }
+.svg-hint { display: none; font-size: 13px; color: var(--muted); margin: -4px 0 8px; }
+@media (max-width: 600px) { .svg-hint { display: block; } }
+svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.s-box { fill: var(--surface); stroke: var(--border); }
+.s-box-acc { fill: var(--accent-soft); stroke: var(--accent); }
+.s-txt { fill: var(--text); font-size: 14px; }
+.s-sub { fill: var(--muted); font-size: 12px; }
+.s-acc { fill: var(--accent); font-size: 13px; font-weight: 700; }
+.s-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.s-down { stroke: var(--c); stroke-width: 2.5; fill: none; }
+.s-up { stroke: var(--d); stroke-width: 2.5; fill: none; }
+footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+.theme-btn {
+  float: right; font: inherit; font-size: 13px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; cursor: pointer;
+}
+@media (max-width: 520px) {
+  body { font-size: 15.5px; }
+  h2 { font-size: 21px; }
+  th, td { padding: 7px 8px; font-size: 13.5px; }
+}
+@media print {
+  nav.toc, .theme-btn { display: none; }
+  details { border: none; padding: 0; }
+  details > *:not(summary) { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Changer de thème">Thème</button>
+  <div class="kicker">EPSI · Master 2 · Module Sécurité d'un SI</div>
+  <h1>Ingénierie des besoins et des exigences</h1>
+  <p class="lead">Fiche de révision du second cours du module, construit sur le référentiel IREB. Comment on passe d'un problème métier à des exigences claires, vérifiables et tenues à jour : définitions, rédaction, modèles, validation, gestion. Elle se termine par le cas pratique noté du club de tennis.</p>
+</header>
+
+<nav class="toc" aria-label="Sommaire">
+  <a href="#vue">Vue d'ensemble</a><a href="#p1">I · Bases</a><a href="#p2">II · Principes</a><a href="#p3">III · Documenter</a><a href="#p4">IV · Élaborer</a><a href="#p5">V · Gérer</a><a href="#p6">VI · Outils</a><a href="#cas">Cas tennis</a><a href="#pieges">Pièges</a><a href="#glossaire">Glossaire</a><a href="#quiz">Quiz</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="vue"><span class="num">0</span>La vue d'ensemble en deux minutes</h2>
+
+<p>L'<strong>ingénierie des exigences</strong> (IE) s'occupe de <em>spécifier</em> et de <em>gérer</em> les exigences d'un système, qu'il soit fait de logiciels, de matériel ou d'organisation (personnes, rôles, processus). Elle se fait <strong>en amont</strong> du projet, dès l'expression des besoins. Son but est simple : éviter de livrer un système qui ne correspond pas à ce que les gens attendaient. Une mauvaise IE est l'une des premières causes d'échec des projets informatiques.</p>
+
+<div class="key"><strong>La phrase qui résume le cours</strong>
+Transformer un <em>problème métier</em> en <em>solution</em>, par l'expression d'un <em>besoin</em> en <em>exigence</em>. L'ingénieur des exigences définit le <strong>quoi</strong>, jamais le <strong>comment</strong>.</div>
+
+<h3>Besoin ou exigence ?</h3>
+<div class="grid">
+  <div class="card"><h4>Besoin</h4><p>Ce que l'utilisateur exprime : un manque, une insatisfaction, un désir. « J'ai besoin de… », « Je veux que… », « Il me faut… ».</p></div>
+  <div class="card"><h4>Exigence</h4><p>Une caractéristique que la solution doit avoir. « L'utilisateur peut… », « Le système doit… ».</p></div>
+</div>
+<p>Le cours insiste : on mélange souvent les <em>besoins</em> (exigences métier) et les <em>solutions</em> (exigences produit). Quelqu'un qui dit « il me faut un site web » donne déjà une solution ; le vrai besoin est peut-être « ne plus perdre de cotisations ».</p>
+
+<h3>La chaîne des exigences</h3>
+<div class="svg-wrap"><svg viewBox="0 0 760 210" role="img" aria-label="Chaîne des exigences : la demande devient besoin, puis exigence métier, exigence produit, exigence solution et enfin outil.">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <g>
+    <rect x="4" y="20" width="118" height="62" rx="8" class="s-box"/>
+    <text x="63" y="46" text-anchor="middle" class="s-txt" font-weight="700">Demande,</text>
+    <text x="63" y="66" text-anchor="middle" class="s-txt" font-weight="700">problème</text>
+    <rect x="160" y="20" width="118" height="62" rx="8" class="s-box-acc"/>
+    <text x="219" y="56" text-anchor="middle" class="s-txt" font-weight="700">Besoins</text>
+    <rect x="316" y="20" width="118" height="62" rx="8" class="s-box-acc"/>
+    <text x="375" y="46" text-anchor="middle" class="s-txt" font-weight="700">Exigences</text>
+    <text x="375" y="66" text-anchor="middle" class="s-txt" font-weight="700">métier</text>
+    <rect x="472" y="20" width="118" height="62" rx="8" class="s-box-acc"/>
+    <text x="531" y="46" text-anchor="middle" class="s-txt" font-weight="700">Exigences</text>
+    <text x="531" y="66" text-anchor="middle" class="s-txt" font-weight="700">produit</text>
+    <rect x="628" y="20" width="128" height="62" rx="8" class="s-box"/>
+    <text x="692" y="46" text-anchor="middle" class="s-txt" font-weight="700">Exigences</text>
+    <text x="692" y="66" text-anchor="middle" class="s-txt" font-weight="700">solution</text>
+  </g>
+  <line x1="124" y1="51" x2="156" y2="51" class="s-line" marker-end="url(#ar)"/>
+  <line x1="280" y1="51" x2="312" y2="51" class="s-line" marker-end="url(#ar)"/>
+  <line x1="436" y1="51" x2="468" y2="51" class="s-line" marker-end="url(#ar)"/>
+  <line x1="592" y1="51" x2="624" y2="51" class="s-line" marker-end="url(#ar)"/>
+  <text x="140" y="104" text-anchor="middle" class="s-sub">recueil</text>
+  <text x="296" y="104" text-anchor="middle" class="s-sub">analyse</text>
+  <text x="452" y="104" text-anchor="middle" class="s-sub">spécifier</text>
+  <text x="608" y="104" text-anchor="middle" class="s-sub">analyse technique</text>
+  <line x1="692" y1="84" x2="692" y2="140" class="s-line" marker-end="url(#ar)"/>
+  <text x="704" y="118" class="s-sub">élaboration</text>
+  <rect x="628" y="144" width="128" height="40" rx="8" class="s-box"/>
+  <text x="692" y="169" text-anchor="middle" class="s-txt" font-weight="700">Outil livré</text>
+  <rect x="4" y="144" width="586" height="40" rx="8" fill="none" stroke="var(--border)" stroke-dasharray="5 4"/>
+  <text x="297" y="169" text-anchor="middle" class="s-sub">En transverse : exigences de processus (contraintes, qualité, organisation, règles de code, interfaces)</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+
+<h3>Les quatre activités de l'ingénieur des exigences</h3>
+<div class="grid">
+  <div class="card"><h4>1 · Élucider</h4><p>Rechercher, capter et consolider les exigences à partir des sources : parties prenantes, documents, systèmes existants.</p></div>
+  <div class="card"><h4>2 · Documenter</h4><p>Les écrire et les modéliser : spécification, gabarit, modèles.</p></div>
+  <div class="card"><h4>3 · Valider et négocier</h4><p>Vérifier que ce qui est écrit correspond aux besoins, et régler les désaccords.</p></div>
+  <div class="card"><h4>4 · Gérer</h4><p>Stocker, versionner, tracer et faire évoluer les exigences.</p></div>
+</div>
+<p><em>Élucider</em> n'est pas un mot du langage courant : en IE, il signifie « faire apparaître », y compris ce que les gens ne savent pas qu'ils veulent. Le cadre de référence est l'<strong>IREB</strong> (International Requirements Engineering Board), qui délivre la certification <strong>CPRE</strong> (Certified Professional for Requirements Engineering), un certificat personnel reconnu mondialement.</p>
+
+<!-- ============================================================ -->
+<h2 id="p1"><span class="num">I</span>Introduction et bases</h2>
+
+<h3>Deux définitions d'une exigence</h3>
+<p><strong>IEEE 610.12 (1990)</strong> : une exigence est (1) une condition ou une aptitude nécessaire à un utilisateur pour résoudre un problème ou atteindre un objectif ; (2) une condition ou une aptitude qu'un système doit remplir pour respecter un contrat, une norme ou un document imposé ; (3) la représentation documentée de (1) ou (2).</p>
+<p><strong>Définition plus récente</strong>, plus facile à retenir : (1) un besoin perçu par une partie prenante ; (2) une capacité ou une propriété que le système doit avoir ; (3) la représentation documentée de l'un ou de l'autre.</p>
+
+<h3>Les trois catégories d'exigences</h3>
+<div class="table-wrap"><table>
+<tr><th>Catégorie</th><th>Ce qu'elle décrit</th><th>Exemple du cours</th></tr>
+<tr><td><strong>Fonctionnelle</strong></td><td>Le comportement : ce que le système <em>fait</em> (traiter des données, réagir, interagir)</td><td>« Le système doit informer le client que sa demande de retrait ne peut aboutir en raison du solde de son compte. »</td></tr>
+<tr><td><strong>Non fonctionnelle (qualité)</strong></td><td>Les propriétés : <em>comment bien</em> il le fait (disponibilité, performance, sécurité…). Elle doit être <strong>vérifiable</strong>, donc chiffrée</td><td>« Le système doit être rétabli en fonctionnement normal dans un délai maximum de 60 minutes suite à erreur type 1. »</td></tr>
+<tr><td><strong>Contrainte</strong></td><td>Une limite imposée de l'extérieur, non négociable, qui ferme des choix de solution (technologie, stratégie, interface avec un autre système)</td><td>« Le site doit être développé avec la technologie imposée par la fédération. »</td></tr>
+</table></div>
+<div class="key"><strong>Le test rapide</strong>
+Enlevez l'exigence. Si le système perd une <em>fonction</em>, elle était fonctionnelle. S'il garde la fonction mais la fait moins bien, elle était non fonctionnelle. Si elle venait d'une décision extérieure qui interdit certaines solutions, c'était une contrainte.</div>
+<p>Le référentiel qualité cité par le cours pour les exigences non fonctionnelles est l'<strong>ISO/IEC 25010:2011</strong>.</p>
+
+<h3>Pourquoi l'IE échoue souvent</h3>
+<p>Les causes listées par le cours se regroupent en quatre familles faciles à retenir :</p>
+<ul>
+  <li><strong>Le non-dit</strong> : trop d'implicite, les gens supposent que c'est évident ; problèmes de communication entre cultures techniques différentes.</li>
+  <li><strong>La pression</strong> : donneurs d'ordre focalisés sur la date de livraison ; parties prenantes aux objectifs divergents ; désaccords non réglés.</li>
+  <li><strong>La mauvaise écriture</strong> : exigences incomplètes, ambiguës, non vérifiables, irréalisables ; documentation pauvre ; on parle du « comment » au lieu du « quoi ».</li>
+  <li><strong>La complexité et le changement</strong> : dérive du périmètre, changements tardifs coûteux, métiers et technologies qui bougent, difficulté à imaginer un système qui n'existe pas encore, ensembles d'exigences difficiles à maintenir (versions, variantes).</li>
+</ul>
+
+<h3>Sous-qualité et sur-qualité</h3>
+<p>Deux écarts entre ce qui est livré et ce qui était attendu. La <strong>sous-qualité</strong>, ce sont des exigences demandées mais non développées. La <strong>sur-qualité</strong>, ce sont des fonctions développées que personne n'a demandées : on a dépensé pour rien. Le cours montre la cascade qui les produit : besoins réels → besoins exprimés → besoins pris en compte dans les spécifications → exigences implémentées → produit livré, qu'on compare au produit attendu.</p>
+<p>Trois référentiels montrent que l'IE est itérative et récursive : la norme <strong>ISO/IEC/IEEE 29148:2011</strong>, le manuel de gestion de projet <strong>HERMES 5.1</strong> et le guide <strong>BABOK</strong> (le référentiel de l'analyse métier).</p>
+
+<h3>Adapter le processus au projet</h3>
+<p>Il n'existe pas de processus unique. Quatre facteurs l'influencent : la complexité du projet, la maturité des acteurs, les contraintes réglementaires, le budget et les délais. Un processus se place sur <strong>trois curseurs</strong> : linéaire ou itératif, prescriptif ou exploratoire, client spécifique ou orienté marché. On le configure par <strong>trois décisions</strong> : choisir la démarche, définir les livrables, définir les validations. Le résultat attendu est un processus <em>proportionné</em> au projet.</p>
+
+<h3>L'ingénieur des exigences</h3>
+<p>Ses compétences : communication, pensée analytique, empathie, résolution de conflits, animation, confiance en soi, persuasion. Il parle le langage des parties prenantes, se familiarise avec leur domaine, rédige le document d'exigences et se porte garant de la satisfaction des demandes.</p>
+
+<!-- ============================================================ -->
+<h2 id="p2"><span class="num">II</span>Les neuf principes fondamentaux</h2>
+
+<div class="table-wrap"><table>
+<tr><th class="n">#</th><th>Principe</th><th>En une phrase</th></tr>
+<tr><td class="n">1</td><td>Orientation vers les valeurs</td><td>Les exigences sont un moyen, pas une fin en soi.</td></tr>
+<tr><td class="n">2</td><td>Parties prenantes</td><td>L'IE consiste à satisfaire leurs désirs et leurs besoins.</td></tr>
+<tr><td class="n">3</td><td>Compréhension partagée</td><td>Impossible de travailler sans base commune.</td></tr>
+<tr><td class="n">4</td><td>Contexte</td><td>Un système ne se comprend pas isolé de son environnement.</td></tr>
+<tr><td class="n">5</td><td>Problème, exigence, solution</td><td>Les trois sont inévitablement entremêlés.</td></tr>
+<tr><td class="n">6</td><td>Validation</td><td>Une exigence non validée est inutile.</td></tr>
+<tr><td class="n">7</td><td>Évolution</td><td>Que les exigences changent est normal, pas un accident.</td></tr>
+<tr><td class="n">8</td><td>Innovation</td><td>Il ne suffit pas d'en faire plus (attention à la sur-qualité).</td></tr>
+<tr><td class="n">9</td><td>Travail systématique et discipliné</td><td>On ne peut pas s'en passer.</td></tr>
+</table></div>
+
+<h3>Principe 1 et l'agilité</h3>
+<p>Le cours lit ce principe à travers les quatre valeurs du <strong>Manifeste agile</strong> : les individus et leurs interactions plus que les processus et les outils ; un logiciel qui fonctionne plus qu'une documentation exhaustive ; la collaboration avec le client plus que la négociation contractuelle ; l'adaptation au changement plus que le suivi d'un plan.</p>
+<div class="trap"><strong>Contresens à éviter</strong>
+« Plus qu'une documentation exhaustive » ne veut pas dire « pas de documentation ». Les <em>user stories</em> du backlog sont déjà une forme de documentation des exigences, et certains secteurs (médical, automobile, aéronautique) imposent une documentation écrite. Répondre au changement n'est pas non plus propre à l'agilité : la traçabilité, l'analyse d'impact et le versionnement y répondent aussi.</div>
+
+<h3>Principe 2 : les parties prenantes</h3>
+<p>Une partie prenante est une personne ou une organisation qui a un intérêt potentiel dans le futur système. Elles sont à la fois les <strong>sources</strong> des exigences et ceux qui <strong>décident</strong>.</p>
+
+<h3>Principe 4 : contexte, limite du contexte, périmètre</h3>
+<p>Le <strong>contexte</strong>, c'est la partie de l'environnement qui compte pour comprendre les exigences : des personnes, des systèmes existants, des processus, des événements, des documents (normes, réglementations). Une exigence ne s'interprète correctement que dans son contexte.</p>
+<div class="svg-wrap"><svg viewBox="0 0 640 250" role="img" aria-label="Trois zones emboîtées : le système à développer, son contexte, puis l'environnement sans intérêt.">
+  <rect x="6" y="6" width="628" height="238" rx="12" fill="none" stroke="var(--border)"/>
+  <text x="22" y="30" class="s-sub">Environnement sans intérêt pour le projet</text>
+  <rect x="60" y="42" width="520" height="184" rx="12" fill="none" stroke="var(--accent)" stroke-dasharray="6 4"/>
+  <text x="76" y="64" class="s-acc">Contexte (personnes, systèmes, processus, événements, documents)</text>
+  <rect x="190" y="88" width="260" height="112" rx="10" class="s-box-acc"/>
+  <text x="320" y="138" text-anchor="middle" class="s-txt" font-weight="700">Système à développer</text>
+  <text x="320" y="160" text-anchor="middle" class="s-sub">ce qu'on peut modifier</text>
+  <text x="320" y="216" text-anchor="middle" class="s-sub">← périmètre du système (trait plein) · limite du contexte (pointillés) →</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+<ul>
+  <li><strong>Périmètre du système</strong> : la limite entre le système et son contexte. Ce qui est dedans, on peut le modifier pendant le projet ; un ancien système à remplacer est dedans.</li>
+  <li><strong>Limite du contexte</strong> : la limite entre le contexte et le reste du monde, qui n'a pas d'intérêt pour les exigences. Elle peut bouger : une réglementation d'abord jugée pertinente peut se révéler non applicable.</li>
+</ul>
+<p>Un contexte mal examiné produit des exigences fausses ou incomplètes, et ces erreurs passent souvent la validation sans être vues.</p>
+
+<h3>Principe 6 : les six règles de validation</h3>
+<p>Impliquer les bonnes parties prenantes ; séparer la découverte des erreurs de leur correction ; valider selon plusieurs points de vue ; changer de forme de documentation ; construire des artefacts de développement à partir des exigences ; répéter la validation. Elles sont détaillées en partie IV.</p>
+
+<h3>Principe 7 : l'évolution et le CCB</h3>
+<p>Les exigences évoluent tout au long du cycle de vie. Les demandes de changement passent par un processus contrôlé, piloté par un <strong>gestionnaire du changement</strong> (<em>change manager</em>) qui fait partie du <strong>CCB</strong> (<em>Change Control Board</em>, comité de contrôle des changements).</p>
+
+<h3>Principe 9 : les règles de rédaction</h3>
+<div class="table-wrap"><table>
+<tr><th>Règle</th><th>Exemple fautif du cours</th><th>Le problème</th></tr>
+<tr><td>Tenir un glossaire et l'appliquer</td><td>Un article : « référence » ou « produit » ?</td><td>Deux mots pour une chose, ou l'inverse</td></tr>
+<tr><td>Éviter les quantités non spécifiées</td><td>« Afficher toutes les données sur toutes les pages »</td><td>Tout, vraiment ?</td></tr>
+<tr><td>Traiter chaque « si » ou « lorsque »</td><td>« Lorsque l'utilisateur est identifié, afficher la page d'accueil »</td><td>Et sinon ?</td></tr>
+<tr><td>Éviter la voix passive</td><td>« Les données d'identification sont saisies »</td><td>Par qui, où, comment ?</td></tr>
+<tr><td>Se méfier des « et » / « ou »</td><td>« Le site doit être rapide et sécurisé »</td><td>Deux exigences en une</td></tr>
+<tr><td>Éviter les redondances</td><td>La même règle écrite à deux endroits</td><td>Incohérences à la première mise à jour</td></tr>
+<tr><td>Bannir le vague</td><td>« Accéder facilement »</td><td>Invérifiable</td></tr>
+<tr><td>Soigner la syntaxe et la ponctuation</td><td>« Si on mangeait, les enfants ? » / « Si on mangeait les enfants ? »</td><td>Le sens change</td></tr>
+<tr><td>Éviter les références ambiguës</td><td>« Il saisit son mot de passe et clique sur le lien ; s'il est invalide… »</td><td>Qui est invalide : le mot de passe ou le lien ?</td></tr>
+</table></div>
+<div class="ex"><strong>L'exemple du missile</strong>
+« Le logiciel calcule la vitesse du missile et sa trajectoire, en 5 secondes maximum. » contre « Le logiciel calcule la vitesse du missile, et sa trajectoire en 5 secondes maximum. » Dans la première phrase, le délai porte sur les deux calculs ; dans la seconde, seulement sur la trajectoire. Une simple virgule rend une exigence de performance impossible à tester.</div>
+
+<!-- ============================================================ -->
+<h2 id="p3"><span class="num">III</span>Documenter les exigences</h2>
+
+<h3>Le modèle de Kano : trois sortes d'exigences</h3>
+<p>Kano classe les exigences selon l'effet qu'elles ont sur la satisfaction du client. C'est la clé pour comprendre pourquoi certaines exigences ne sont jamais dites.</p>
+<div class="table-wrap"><table>
+<tr><th>Facteur</th><th>Présent</th><th>Absent</th><th>Niveau de conscience</th><th>Comment le trouver</th></tr>
+<tr><td><strong>De base</strong></td><td>Pas de satisfaction particulière</td><td>Très forte insatisfaction</td><td>Subconscient : jamais exprimé, « ça va de soi »</td><td>Observation, documents existants</td></tr>
+<tr><td><strong>De performance</strong></td><td>Satisfaction</td><td>Mécontentement croissant</td><td>Conscient : demandé explicitement</td><td>Questions (entretiens, questionnaires), veille concurrentielle</td></tr>
+<tr><td><strong>D'attraction</strong></td><td>Forte satisfaction, « bonne surprise »</td><td>Ne manque pas</td><td>Inconscient : on ne sait pas qu'on le veut</td><td>Créativité (brainstorming, analogies)</td></tr>
+</table></div>
+<p>Exemple pour une voiture : des freins qui marchent (base), la consommation (performance), un toit qui s'ouvre tout seul quand il fait beau (attraction). Avec le temps, l'attraction devient performance, puis base.</p>
+
+<h3>À quoi sert la documentation</h3>
+<p>Elle est un <strong>support de communication</strong> entre parties prenantes et équipe projet, et elle a une valeur <strong>juridique et contractuelle</strong> : les exigences engagent, parfois pour longtemps. Elle est persistante, sert de référence commune, préserve la connaissance des experts, facilite l'arrivée des nouveaux et aide à maîtriser la complexité. Le cours rappelle aussi qu'un produit d'activité (un livrable d'IE) est <em>temporaire</em> (lié à un contexte), <em>évolutif</em> et <em>durable</em>.</p>
+
+<h3>Écrire en langage naturel : les sept conseils de Karl Wiegers</h3>
+<ol>
+  <li>Phrases courtes, forme active, pas de négations.</li>
+  <li>Relire l'exigence du point de vue du développeur : est-elle explicite ?</li>
+  <li>Trouver le bon niveau de détail.</li>
+  <li>Écrire des exigences testables une par une.</li>
+  <li>Repérer les exigences multiples cachées derrière un « et » ou un « ou ».</li>
+  <li>Garder un niveau de détail cohérent dans tout le document.</li>
+  <li>Éviter les redondances.</li>
+</ol>
+
+<h3>Les cinq altérations du langage</h3>
+<p>Quand on passe de ce qu'on perçoit à ce qu'on écrit, de l'information se perd. Le cours en nomme cinq formes, toutes avec un exemple de bibliothèque :</p>
+<div class="table-wrap"><table>
+<tr><th>Altération</th><th>Exemple</th><th>Question à poser</th></tr>
+<tr><td><strong>Nominalisation</strong> : un nom résume un processus</td><td>« Au <em>retour</em> d'un ouvrage réservé, le système doit notifier le client. »</td><td>Que se passe-t-il pendant le retour ? Qui le déclenche ? Quelles erreurs ?</td></tr>
+<tr><td><strong>Nom sans indice de référence</strong></td><td>« Les données doivent être affichées graphiquement pour l'utilisateur. »</td><td>Quelles données ? Quel utilisateur ?</td></tr>
+<tr><td><strong>Quantificateur universel</strong></td><td>« Permettre à <em>chaque</em> adhérent d'emprunter <em>tout</em> ouvrage. »</td><td>Les mineurs ? Les ouvrages à consulter sur place ?</td></tr>
+<tr><td><strong>Condition incomplète</strong></td><td>« Si l'ouvrage n'est pas réservé, permettre de continuer le prêt. »</td><td>Et s'il est réservé ?</td></tr>
+<tr><td><strong>Verbe incomplet</strong></td><td>« Le système doit afficher les clients non autorisés. »</td><td>Quand ? Comment ? À qui ?</td></tr>
+</table></div>
+
+<h3>Les six ambiguïtés</h3>
+<div class="table-wrap"><table>
+<tr><th>Type</th><th>Exemple</th></tr>
+<tr><td>Lexicale, polysémie (un mot, plusieurs sens)</td><td>« Julie sent la rose » : elle la respire, ou elle en a l'odeur ?</td></tr>
+<tr><td>Lexicale, homonymie</td><td>compte / conte / comte ; « un ours a mangé un avocat »</td></tr>
+<tr><td>Lexicale, synonymes</td><td>Deux mots voisins employés pour la même chose, ou pas</td></tr>
+<tr><td>Structurale</td><td>« Sylvain a vu un homme avec un télescope » : qui tient le télescope ?</td></tr>
+<tr><td>Sémantique (et / ou)</td><td>Si [A ou B] et C, ou bien si A ou [B et C] ?</td></tr>
+<tr><td>Termes vagues</td><td>« Gérer les données de façon sécurisée » : quelles données, quel utilisateur, « sécurisée » selon quoi ?</td></tr>
+</table></div>
+
+<h3>Le gabarit d'exigence</h3>
+<p>C'est l'outil le plus concret du cours, et le plus utile pour le cas pratique. Une exigence bien formée suit ce moule :</p>
+<div class="formula">[Quand ? Dans quelles conditions ?] Le système [nom] DOIT | DEVRAIT | DEVRA [verbe] | permettre à [qui] de [verbe] | être capable de [verbe] [objet] [compléments]</div>
+<div class="table-wrap"><table>
+<tr><th>Mot-clé</th><th>Valeur juridique</th></tr>
+<tr><td><strong>DOIT</strong> (<em>shall</em>)</td><td>Obligatoire au contrat : si elle n'est pas satisfaite, le client peut refuser le produit.</td></tr>
+<tr><td><strong>DEVRAIT</strong> (<em>should</em>)</td><td>Souhaitée, non obligatoire. Elle améliore la satisfaction et la collaboration.</td></tr>
+<tr><td><strong>DEVRA</strong> (<em>will</em>)</td><td>À intégrer plus tard : elle deviendra obligatoire, on construit le système pour l'accueillir.</td></tr>
+</table></div>
+<p>Trois façons de décrire l'activité du système :</p>
+<ul>
+  <li><strong>Activité autonome</strong> (aucun utilisateur) : « Le système doit calculer le montant des frais de tenue de compte. »</li>
+  <li><strong>Interaction avec un utilisateur</strong> : « Le système doit permettre au client de visualiser les opérations du mois en cours sur son compte. »</li>
+  <li><strong>Exigence d'interface</strong> (avec un autre système) : « Le système de gestion de médiathèque doit être capable de recevoir des données d'une autre médiathèque du réseau. »</li>
+</ul>
+<div class="ex"><strong>Exemple résolu · réécrire une mauvaise exigence</strong>
+Départ : « Le site du club doit être rapide et sécurisé. » Problèmes : deux exigences en une (« et »), deux termes vagues, pas de condition, pas d'acteur.<br>
+Réécriture, en deux exigences : « Lorsqu'un membre valide une réservation de court, le système de réservation DOIT afficher la confirmation en moins de X secondes. » et « Après trois saisies erronées du mot de passe, le système DOIT bloquer le compte du membre pendant Y minutes. » Les valeurs X et Y se fixent avec les parties prenantes. La seconde montre qu'une partie de la « sécurité » est en réalité fonctionnelle.</div>
+
+<h3>Trois perspectives et trois formes</h3>
+<p>Une exigence peut regarder le système sous trois angles : <strong>structurel</strong> (quelles données et comment elles se relient), <strong>fonctionnel</strong> (comment les entrées deviennent des sorties) et <strong>comportemental</strong> (quels états, quels événements font passer de l'un à l'autre). On les documente en <strong>langage naturel</strong> (couvre tout, mais ambigu), en <strong>modèles</strong> (précis, mais un seul angle à la fois) ou, le plus souvent, en combinant les deux.</p>
+<p>Le document d'exigences sert à tout le monde : le client (contrat, recette), l'expert métier (validation), l'équipe projet (charges, planning, risques), les architectes, les développeurs, les testeurs (cas de test) et les exploitants.</p>
+
+<h3>Les user stories et la grille INVEST</h3>
+<p>En agile, une <em>user story</em> est une exigence très courte, du type « En tant que membre, je veux réserver un court en ligne afin de ne plus me déplacer ». Une bonne story est :</p>
+<div class="table-wrap"><table>
+<tr><th>Lettre</th><th>Critère</th><th>Sens</th></tr>
+<tr><td class="n">I</td><td>Indépendante</td><td>Ne dépend pas des autres, au moins dans le sprint</td></tr>
+<tr><td class="n">N</td><td>Négociable</td><td>Les détails restent discutables, d'où une seule petite phrase</td></tr>
+<tr><td class="n">V</td><td>Valeur</td><td>Apporte de la valeur métier</td></tr>
+<tr><td class="n">E</td><td>Estimable</td><td>L'équipe peut en estimer le coût</td></tr>
+<tr><td class="n">S</td><td>Suffisamment petite</td><td>Tient dans un sprint</td></tr>
+<tr><td class="n">T</td><td>Testable</td><td>On sait dire si elle est faite</td></tr>
+</table></div>
+
+<h3>Les modèles</h3>
+<p>Un modèle est une représentation abstraite de la réalité, avec trois caractéristiques : il <strong>représente</strong>, il <strong>simplifie</strong> (abstraction) et il sert un <strong>usage précis</strong> (pragmatisme). Le cours donne trois exemples sur une inscription universitaire : le <strong>diagramme de contexte</strong> (le système et ses acteurs externes, avec les flux échangés), le <strong>modèle de domaine</strong> (les concepts métier et leurs liens, avec des cardinalités : un étudiant a 0 à n inscriptions, une inscription concerne une seule formation) et le <strong>diagramme de séquence</strong> (l'ordre des messages : saisir le dossier, le vérifier, demander le paiement, le confirmer, valider, accuser réception).</p>
+
+<h3>Les modèles de buts</h3>
+<p>Trois artefacts se complètent : les <strong>buts</strong> (les intentions, les plus abstraits et les plus stables), les <strong>scénarios</strong> (des déroulements d'usage, regroupés en cas d'utilisation) et les <strong>exigences système</strong> (le détail des fonctions et qualités). Toute exigence doit pouvoir remonter à un but ; une exigence qui n'en sert aucun est suspecte.</p>
+<p>Dans un <strong>arbre des buts</strong>, on monte d'un niveau en demandant <em>pourquoi ?</em> et on descend en demandant <em>comment ?</em>. Une décomposition <strong>ET</strong> exige que tous les sous-buts soient atteints ; une décomposition <strong>OU</strong> se contente d'un seul.</p>
+<div class="ex"><strong>Exemple du cours</strong>
+« Satisfaire la demande de l'abonné à la bibliothèque municipale » se décompose en « fournir les ouvrages demandés », « proposer une base riche » et « maintenir la disponibilité ». Pourquoi proposer une base riche ? Pour satisfaire l'abonné. Comment le satisfaire ? Entre autres en proposant une base riche.</div>
+
+<h3>Les cas d'utilisation (CU)</h3>
+<p>Un cas d'utilisation représente une <strong>exigence fonctionnelle</strong> : les interactions entre un acteur et le système. L'ensemble des CU doit couvrir toutes les exigences fonctionnelles. On combine un <strong>diagramme</strong> (vue d'ensemble) et une <strong>spécification textuelle</strong> (le détail), car le diagramme ne montre que les noms et les relations.</p>
+<ul>
+  <li><strong>Cas d'utilisation</strong> : un ovale, nommé par un <em>verbe à l'infinitif</em> (« Réserver un court »).</li>
+  <li><strong>Acteur</strong> : une personne ou un système extérieur qui interagit directement avec le système.</li>
+  <li><strong>Limite du système</strong> : le cadre qui sépare l'intérieur de l'extérieur.</li>
+</ul>
+<div class="table-wrap"><table>
+<tr><th>Relation</th><th>Sens</th><th>Exemple du cours</th></tr>
+<tr><td><strong>Inclusion</strong> (<em>include</em>)</td><td>A a <em>toujours</em> besoin de B</td><td>« Retirer un montant » inclut systématiquement « vérifier la solvabilité du client »</td></tr>
+<tr><td><strong>Extension</strong> (<em>extend</em>)</td><td>B complète <em>parfois</em> A</td><td>« Créer une commande » peut appeler « vérifier la disponibilité du produit »</td></tr>
+</table></div>
+<p>Moyen mnémotechnique : <em>include</em> = obligatoire, <em>extend</em> = optionnel.</p>
+<p><strong>Règles des scénarios</strong> : un CU a <strong>un et un seul scénario nominal</strong>, de 0 à n scénarios alternatifs et de 0 à n scénarios d'exception. Il part d'une <strong>pré-condition</strong> (l'état requis avant) et aboutit à une <strong>post-condition</strong> de succès (après le nominal ou un alternatif) ou d'échec (après une exception). La première étape implique l'acteur déclencheur, la dernière l'acteur récepteur.</p>
+<div class="ex"><strong>Le CU « Retirer de l'argent au distributeur »</strong>
+Pré-condition : la caisse contient au moins un billet. Post-condition de succès : la caisse contient moins de billets et une transaction est enregistrée (montant, numéro de carte, date). Post-condition d'échec : la carte n'est pas valide (illisible, périmée). Variantes à prévoir : code erroné jusqu'à la troisième saisie, montant supérieur à l'autorisé, plus de billets.</div>
+
+<h3>Les trois perspectives en modèles UML</h3>
+<div class="table-wrap"><table>
+<tr><th>Perspective</th><th>Question</th><th>Modèle</th><th>Éléments clés</th></tr>
+<tr><td>Structurelle</td><td>Quelles données, quels liens ?</td><td>Diagramme de classes UML, modèle entité-relation</td><td>Classes, associations, héritage (généralisation), composition, cardinalités (0..1, 1..*, 0..*)</td></tr>
+<tr><td>Fonctionnelle</td><td>Comment les entrées deviennent-elles des sorties ?</td><td>Diagramme de flux de données (DFD), diagramme d'activités UML</td><td>Processus, entrepôts de données, sources et destinations externes, flux ; pour les activités : décisions, parallélisme, couloirs par acteur</td></tr>
+<tr><td>Comportementale</td><td>Quels états, quelles transitions ?</td><td>Diagramme d'états UML</td><td>États (situation stable qui attend un événement), transitions déclenchées par des événements, sous-états, automates concurrents</td></tr>
+</table></div>
+<div class="trap"><strong>Lien avec l'examen</strong>
+Le <strong>diagramme de flux de données</strong> est le point commun des deux cours du module : on en dessinera un à l'examen. Ses quatre éléments sont le processus (il transforme les données, sans dire comment), l'entrepôt (les données qui persistent), les sources et destinations externes, et les flux (seulement les plus importants). Utilisé pour fixer le périmètre, un DFD s'appelle un <strong>diagramme de contexte</strong>. La fiche « cartographie » y ajoute les zones de confiance.</div>
+
+<h3>Glossaire, structure du document, prototypes, qualité</h3>
+<p><strong>Le glossaire</strong> est obligatoire : les écarts d'interprétation sont une source majeure de conflits. Il est géré de façon centralisée, maintenu pendant tout le projet, accessible à tous, approuvé par les parties prenantes, et il indique l'origine de chaque terme.</p>
+<p><strong>La trame IEEE 830</strong> (SRS, <em>Software Requirements Specification</em>) donne une structure type : 1. Introduction (objet, portée, définitions, références) ; 2. Description générale (contexte, fonctions, utilisateurs, contraintes, hypothèses) ; 3. Exigences détaillées (interfaces, fonctionnelles, performance, contraintes de conception, qualité) ; puis en annexe le glossaire, les modèles, les priorités et la matrice de traçabilité. On l'adapte, on ne la recopie pas.</p>
+<p><strong>Un prototype</strong> est une première version d'une solution, utile pour découvrir et valider les besoins, notamment d'interface.</p>
+<p><strong>Un bon document d'exigences</strong> est non ambigu et cohérent, structuré, modifiable, complet et traçable.</p>
+
+<!-- ============================================================ -->
+<h2 id="p4"><span class="num">IV</span>Élaborer : trouver, valider, négocier</h2>
+
+<h3>Les trois sources des exigences</h3>
+<p>Les <strong>parties prenantes</strong>, la <strong>documentation</strong> et les <strong>systèmes existants</strong>. Oublier une partie prenante, c'est oublier ses exigences. Pour chacune, on note : nom, rôle, contact, disponibilité, pertinence, expertise, objectifs et intérêts personnels. On choisit bien les représentants, on obtient l'engagement de la hiérarchie et on les garde impliqués : sinon viennent les critiques, la démotivation et la peur du changement.</p>
+<p>Le cours ajoute la <strong>veille</strong> (technologique, réglementaire, concurrentielle, des usages), qui transforme des signaux extérieurs en besoins. L'atelier associé produit une carte <em>besoin × tendance × valeur</em>.</p>
+
+<h3>Les techniques d'élucidation</h3>
+<p>L'objectif est de faire apparaître les exigences conscientes, inconscientes et subconscientes. Chaque technique attrape un type de facteur Kano :</p>
+<div class="table-wrap"><table>
+<tr><th>Technique</th><th>Objectif</th><th>Facteur Kano</th><th>Exemples</th></tr>
+<tr><td>Enquête</td><td>Recueillir le savoir explicite</td><td>Performance</td><td>Entretiens, questionnaires</td></tr>
+<tr><td>Créativité</td><td>Faire naître des idées nouvelles</td><td>Attraction</td><td>Brainstorming, analogies</td></tr>
+<tr><td>Basée sur les documents</td><td>Comprendre l'existant et réutiliser</td><td>Base (et attraction d'hier)</td><td>« Archéologie » du système, réingénierie</td></tr>
+<tr><td>Observation</td><td>Capter le savoir implicite</td><td>Base</td><td>Observation sur le terrain, apprentissage</td></tr>
+<tr><td>Support</td><td>Accompagner les autres</td><td>Selon la démarche</td><td>Cartes mentales, ateliers, cas d'utilisation, prototypes</td></tr>
+</table></div>
+<p>Logique à retenir : on ne trouve pas une exigence de base en posant une question, puisque personne ne pense à la dire. Il faut <em>regarder</em> les gens travailler.</p>
+
+<h3>Valider : trois facettes de qualité</h3>
+<div class="grid">
+  <div class="card"><h4>Contenu (8 critères)</h4><p>Complétude de l'ensemble et de chaque exigence, traçabilité, exactitude, cohérence, pas de décision de conception prématurée, vérifiabilité (critère d'acceptation), nécessité.</p></div>
+  <div class="card"><h4>Documentation (4 critères)</h4><p>Conforme au format, compréhensible (termes au glossaire), non ambiguë, conforme aux règles du modèle.</p></div>
+  <div class="card"><h4>Accord (3 critères)</h4><p>Toutes les parties prenantes d'accord, accord maintenu après changement, conflits résolus.</p></div>
+</div>
+
+<h3>Les six principes de validation, détaillés</h3>
+<ol>
+  <li><strong>Impliquer les bonnes parties prenantes</strong>, avec un vérificateur indépendant : l'auteur d'une exigence ne la valide pas lui-même.</li>
+  <li><strong>Séparer découverte et correction</strong> : on liste d'abord tous les défauts, on corrige ensuite.</li>
+  <li><strong>Varier les points de vue</strong> : client, architecte, testeur ; contenu, documentation, accord.</li>
+  <li><strong>Changer de forme</strong> : réécrire un texte en modèle (ou l'inverse) fait apparaître les erreurs.</li>
+  <li><strong>Construire des artefacts</strong> (tests, manuel, conception) à partir des exigences ; c'est coûteux, on le réserve aux exigences critiques.</li>
+  <li><strong>Répéter</strong> : surtout si le domaine est nouveau, le projet long ou la technologie innovante.</li>
+</ol>
+
+<h3>Les techniques de validation</h3>
+<div class="table-wrap"><table>
+<tr><th>Technique</th><th>Formalisme</th><th>Principe</th></tr>
+<tr><td>Revue commentée</td><td>Faible</td><td>Chacun annote les défauts ; efficace pour une première lecture</td></tr>
+<tr><td><strong>Inspection</strong></td><td>Fort</td><td>4 étapes : préparation, vue d'ensemble (l'auteur explique), détection des défauts, consolidation en liste d'erreurs</td></tr>
+<tr><td>Revue pas à pas (<em>walk-through</em>)</td><td>Moyen</td><td>Inspection allégée : l'auteur présente, on discute pas à pas</td></tr>
+<tr><td>Lecture basée sur une perspective</td><td>Moyen</td><td>Chaque relecteur endosse un rôle avec sa liste de contrôle</td></tr>
+<tr><td>Validation par prototype</td><td>Variable</td><td>La plus efficace pour trouver les erreurs ; prototype jetable ou évolutif</td></tr>
+<tr><td>Liste de contrôle</td><td>Support</td><td>Une page maximum, un seul point de vue, des questions précises</td></tr>
+</table></div>
+<p><strong>Les six rôles de l'inspection</strong> : le <em>modérateur</em> (anime, neutre), l'<em>auteur</em> (explique puis corrige), le <em>lecteur</em> (présente le document), l'<em>inspecteur</em> (cherche les défauts), le <em>scribe</em> (note) et l'<em>organisateur</em> (prépare et suit le processus).</p>
+
+<h3>Négocier et résoudre les conflits</h3>
+<p>Un conflit non résolu menace l'acceptation du système et peut faire échouer le projet. Quatre activités : <strong>identifier</strong> le conflit tôt, l'<strong>analyser</strong> (de quel type est-il ?), le <strong>résoudre</strong> avec la technique adaptée, <strong>documenter</strong> la résolution pour ne pas le rejouer.</p>
+<div class="table-wrap"><table>
+<tr><th>Type de conflit</th><th>D'où il vient</th><th>Exemple</th></tr>
+<tr><td>De contenu</td><td>Une même exigence comprise différemment</td><td>Manque d'information, ambiguïté</td></tr>
+<tr><td>D'intérêts</td><td>Des objectifs divergents</td><td>Le budget contre la qualité attendue par le client</td></tr>
+<tr><td>De valeurs</td><td>Des critères jugés différemment</td><td>Différences culturelles</td></tr>
+<tr><td>Interpersonnel</td><td>Des parties de même rang qui s'opposent</td><td>Émotions fortes, communication rompue</td></tr>
+<tr><td>De structure</td><td>Un pouvoir inégal</td><td>Différence d'autorité entre les parties</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="p5"><span class="num">V</span>Gérer les exigences dans le temps</h2>
+
+<h3>Les attributs d'une exigence</h3>
+<p>Chaque exigence porte des informations structurées : ses <strong>attributs</strong>. L'ensemble des attributs choisis pour un type d'exigence forme le <strong>schéma d'attributs</strong>, adapté au projet. Les plus importants :</p>
+<div class="table-wrap"><table>
+<tr><th>Attribut</th><th>Valeurs possibles</th></tr>
+<tr><td>Identifiant</td><td>Unique, court, stable</td></tr>
+<tr><td>Nom, description, type</td><td>Fonctionnelle, qualité, contrainte</td></tr>
+<tr><td>Auteur, responsable, source</td><td>Qui l'a écrite, qui en répond, d'où elle vient</td></tr>
+<tr><td>Version</td><td>Version actuelle</td></tr>
+<tr><td>Statut du contenu</td><td>Idée, concept, contenu détaillé</td></tr>
+<tr><td>Statut de validation</td><td>Validée, non validée, erronée, à compléter</td></tr>
+<tr><td>Statut d'accord</td><td>En conflit, non négociée, OK</td></tr>
+<tr><td>Stabilité</td><td>Figée, établie, volatile</td></tr>
+<tr><td>Priorité, risque, obligation légale</td><td>Niveaux à définir</td></tr>
+<tr><td>Charge, release</td><td>Estimée ou réelle ; version cible</td></tr>
+<tr><td>Références croisées</td><td>Liens vers d'autres exigences</td></tr>
+</table></div>
+<p>À partir des attributs, on construit des <strong>vues</strong> par rôle : une <em>vue sélective</em> filtre (par exemple, seulement les priorités maximales), une <em>vue agrégée</em> calcule (par exemple, le pourcentage d'exigences en conflit par auteur).</p>
+
+<h3>Prioriser</h3>
+<p>Prioriser sert à affecter les ressources, résoudre les conflits, planifier les livraisons. La procédure : définir buts et contraintes, choisir les critères (coût, risque, volatilité, calendrier), choisir qui décide, prendre des exigences de même niveau d'abstraction, puis choisir une technique.</p>
+<div class="table-wrap"><table>
+<tr><th>Technique</th><th>Principe</th></tr>
+<tr><td>Classement sur un critère</td><td>Obligatoire, optionnelle, souhaitée (les deux dernières sont difficiles à distinguer)</td></tr>
+<tr><td>Classement de Kano</td><td>Base, performance, attraction</td></tr>
+<tr><td>Analyse coût-valeur</td><td>Placer chaque exigence sur un graphique valeur / coût découpé en zones de priorité</td></tr>
+<tr><td>Évaluation de la valeur</td><td>Que se passe-t-il si on l'enlève ou la retarde ? Brainstorming, Ishikawa, vote</td></tr>
+<tr><td>Évaluation du coût</td><td><em>Planning poker</em> en agile : l'équipe estime en <em>story points</em></td></tr>
+<tr><td>Matrice de Wiegers</td><td>Bénéfice, préjudice, coût et risque relatifs, pondérés, donnent un score et un rang</td></tr>
+</table></div>
+
+<h3>Tracer</h3>
+<p>La <strong>traçabilité</strong>, c'est pouvoir suivre une exigence de son origine jusqu'au code et aux tests. Elle permet de vérifier qu'une exigence est bien implémentée, de repérer les fonctions superflues (qui ne servent aucune exigence) et les exigences sans origine (à ne pas implémenter), de mesurer l'impact d'un changement, de réutiliser, d'attribuer les responsabilités et de simplifier la maintenance. On la représente par des références textuelles ou des liens, par une <strong>matrice de traçabilité</strong> (difficile à maintenir quand il y a beaucoup d'exigences) ou par un <strong>graphe</strong>.</p>
+
+<h3>Versionner</h3>
+<p>Un changement important de contenu fait passer de v1 à v2 ; un petit changement ne touche que l'incrément (v0.1, v0.2). Une exigence suit un cycle de vie :</p>
+<div class="formula">Brouillon → Analysée → Validée → Implémentée → Testée → En production → Obsolète</div>
+<p>Une <strong>baseline</strong> fige un référentiel validé à un instant donné : c'est le point de comparaison commun. Exemple : v1.0 et v1.1 forment la baseline A, la demande de changement CR-12 mène à la v2.0, baseline B. L'historique n'est jamais effacé.</p>
+
+<h3>Gérer les changements</h3>
+<p>Les exigences changent parce que les parties prenantes veulent faire évoluer le système, parce qu'une loi change, ou à cause d'une technologie ou d'un concurrent nouveaux. Le nombre de demandes est un indicateur : presque aucune, c'est le signe d'un désintérêt ; énormément, c'est le signe que l'IE a été mal faite au départ.</p>
+<p>Chaque <strong>demande de changement</strong> (identifiant, titre, description, justification, date, demandeur, priorité) passe devant le <strong>CCB</strong>, qui l'approuve ou la rejette, fixe sa priorité et conduit une <strong>analyse d'impact</strong>. Le CCB réunit notamment le gestionnaire du changement (qui le préside et sert de médiateur), le chef de projet, l'ingénieur des exigences, un architecte, le gestionnaire de configuration, des représentants du client, du produit, de la qualité et du sous-traitant.</p>
+<div class="grid">
+  <div class="card"><h4>Correctif</h4><p>Une défaillance en production causée par une erreur dans les exigences.</p></div>
+  <div class="card"><h4>Adaptatif</h4><p>Le contexte a changé.</p></div>
+  <div class="card"><h4>Exceptionnel</h4><p>À faire immédiatement, quel que soit le prix (correctif ou adaptatif).</p></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="p6"><span class="num">VI</span>Les outils</h2>
+<p>Avant de choisir un outil : définir les responsabilités, les techniques et le processus. Ensuite : prévoir les ressources, faire un pilote, évaluer les candidats sur des critères fixés à l'avance, estimer tous les coûts, former les utilisateurs. Un bon outil gère texte, modèles, demandes de changement et plans de test, relie les éléments entre eux (traçabilité), identifie chaque élément de façon unique, offre des vues, des rapports et des exports.</p>
+<div class="table-wrap"><table>
+<tr><th>Famille</th><th>Exemples cités</th></tr>
+<tr><td>Collaborer</td><td>Confluence, Figma</td></tr>
+<tr><td>Piloter</td><td>Jira, Azure DevOps</td></tr>
+<tr><td>Spécifier et tracer</td><td>DOORS Next, Enterprise Architect</td></tr>
+<tr><td>Bureautique</td><td>Word, Excel (souvent suffisant pour un petit projet)</td></tr>
+</table></div>
+<p>L'atelier du cours compare les outils avec une grille pondérée sur quatre critères (collecte, documentation, validation, traçabilité), puis tranche : un outil unique, une chaîne intégrée ou une combinaison.</p>
+
+<!-- ============================================================ -->
+<h2 id="cas"><span class="num">★</span>Le cas pratique noté : le club de tennis</h2>
+<p><strong>La situation.</strong> Vous êtes la nouvelle équipe dirigeante d'un club de tennis associatif (loi 1901). En octobre, le président constate environ <strong>3 % de pertes</strong> dans l'encaissement des cotisations et des inscriptions à l'école de tennis. L'idée avancée : un site web pour informer les membres (conditions, tarifs), réserver un court à distance et suivre les animations du week-end. L'objectif est de gagner <strong>10 % de membres en trois ans</strong>. L'informatique de gestion sera entièrement revue, et la comptabilité réorganisée pour que le comptable extérieur se limite à des contrôles. Vous êtes chef de projet.</p>
+<p><strong>Le livrable</strong>, une expression de besoin, à rendre avant une <strong>soutenance orale de 10 minutes</strong> :</p>
+<ol>
+  <li>Informations générales : nom du projet, client, responsables MOA (maîtrise d'ouvrage, le côté client qui exprime le besoin).</li>
+  <li>Présentation du projet : contexte, objectifs, description des besoins.</li>
+  <li>Périmètre : l'existant (l'organisation passée et présente) et la cible (pour qui est le projet).</li>
+  <li>Contraintes.</li>
+  <li>Glossaire.</li>
+</ol>
+<div class="key"><strong>Comment appliquer le cours au cas</strong>
+<em>Partir du problème, pas de la solution.</em> Le « site web » est une solution proposée ; les problèmes sont la perte de 3 % d'encaissements et le besoin d'attirer des membres. Une bonne expression de besoin le montre, et garde le site comme une piste. <em>Lister les parties prenantes</em> : membres adultes, parents des élèves de l'école, entraîneurs, bureau, trésorier, comptable extérieur, fédération. <em>Écrire quelques exigences avec le gabarit</em>, en mélangeant les trois catégories. <em>Tenir un glossaire</em> : « membre », « adhérent », « licencié » sont-ils la même chose ?</div>
+<div class="ex"><strong>Exemples d'exigences pour le club, classées</strong>
+Fonctionnelle : « Le système de gestion DOIT permettre au trésorier d'éditer la liste des membres dont la cotisation n'est pas réglée. » Fonctionnelle : « Le système DOIT permettre à un membre de réserver un créneau d'une heure sur un court libre. » Non fonctionnelle : « Le site DOIT rester accessible 99 % du temps entre septembre et juin. » Contrainte : « Le budget annuel du système ne DOIT pas dépasser le montant voté en assemblée générale. » Attraction (DEVRAIT) : « Le système DEVRAIT proposer à un membre un partenaire de son niveau pour un créneau. » Les chiffres sont des exemples à faire valider par le club.</div>
+
+<!-- ============================================================ -->
+<h2 id="pieges"><span class="num">!</span>Les pièges, en une liste</h2>
+<ol>
+  <li>Confondre besoin (« il me faut ») et exigence (« le système doit »), ou besoin et solution.</li>
+  <li>Ranger une contrainte parmi les exigences qualité : une contrainte restreint les solutions, elle ne décrit pas une qualité.</li>
+  <li>Classer une exigence d'interface en contrainte : recevoir des données d'un autre système est une <em>fonction</em>. Elle ne devient contrainte que si le format ou le protocole est imposé de l'extérieur.</li>
+  <li>Écrire une exigence non fonctionnelle sans seuil : « rapide », « sécurisé », « facile » sont invérifiables.</li>
+  <li>Mettre deux exigences dans une phrase avec « et ».</li>
+  <li>Oublier le « sinon » d'une condition.</li>
+  <li>Croire qu'un diagramme de cas d'utilisation suffit : il ne montre que des noms et des liens, et il ne couvre que le fonctionnel.</li>
+  <li>Donner plusieurs scénarios nominaux à un CU : il en a un et un seul.</li>
+  <li>Inverser <em>include</em> (toujours) et <em>extend</em> (parfois).</li>
+  <li>Chercher les exigences de base par questionnaire : elles sont subconscientes, il faut observer.</li>
+  <li>Laisser l'auteur valider ses propres exigences.</li>
+  <li>Corriger pendant qu'on cherche les défauts : on sépare les deux.</li>
+  <li>Comprendre l'agilité comme « pas de documentation ».</li>
+  <li>Voir la sur-qualité comme un bonus : c'est un écart, de l'argent dépensé sans demande.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="glossaire"><span class="num">≡</span>Glossaire</h2>
+<dl class="gloss">
+  <dt>Baseline</dt><dd>Un référentiel d'exigences validé et figé à un instant donné, qui sert de point de comparaison.</dd>
+  <dt>BABOK</dt><dd><span class="full">Business Analysis Body of Knowledge.</span> Le guide de référence de l'analyse métier.</dd>
+  <dt>CCB</dt><dd><span class="full">Change Control Board.</span> Le comité qui accepte ou refuse les demandes de changement.</dd>
+  <dt>Contexte (du système)</dt><dd>La partie de l'environnement qui compte pour comprendre les exigences.</dd>
+  <dt>CPRE</dt><dd><span class="full">Certified Professional for Requirements Engineering.</span> La certification personnelle de l'IREB.</dd>
+  <dt>CU</dt><dd>Cas d'utilisation : les interactions entre un acteur et le système pour atteindre un résultat.</dd>
+  <dt>DFD</dt><dd>Diagramme de flux de données : processus, entrepôts, entités externes et flux.</dd>
+  <dt>Élucidation</dt><dd>Faire apparaître les exigences, y compris celles que personne ne pense à dire.</dd>
+  <dt>IE</dt><dd>Ingénierie des exigences.</dd>
+  <dt>IEEE 830</dt><dd>La trame type d'un document de spécification des exigences logicielles (SRS).</dd>
+  <dt>INVEST</dt><dd>Les six qualités d'une bonne user story : indépendante, négociable, valeur, estimable, suffisamment petite, testable.</dd>
+  <dt>IREB</dt><dd><span class="full">International Requirements Engineering Board.</span> L'organisme qui définit le référentiel du cours.</dd>
+  <dt>ISO/IEC 25010</dt><dd>Le modèle de qualité des logiciels, utilisé pour les exigences non fonctionnelles.</dd>
+  <dt>ISO/IEC/IEEE 29148</dt><dd>La norme sur les processus et produits de l'ingénierie des exigences.</dd>
+  <dt>Kano</dt><dd>Modèle qui classe les exigences en facteurs de base, de performance et d'attraction.</dd>
+  <dt>MOA</dt><dd>Maîtrise d'ouvrage : le côté client, qui exprime le besoin et reçoit le produit.</dd>
+  <dt>Périmètre (du système)</dt><dd>La limite entre le système à développer et son contexte.</dd>
+  <dt>Planning poker</dt><dd>Technique agile où l'équipe estime ensemble le coût des user stories en story points.</dd>
+  <dt>Post-condition / pré-condition</dt><dd>L'état du système après / avant l'exécution d'un cas d'utilisation.</dd>
+  <dt>SRS</dt><dd><span class="full">Software Requirements Specification.</span> Le document de spécification des exigences logicielles.</dd>
+  <dt>Sous-qualité / sur-qualité</dt><dd>Exigences demandées mais non livrées / livrées mais non demandées.</dd>
+  <dt>Traçabilité</dt><dd>La capacité à suivre une exigence de son origine jusqu'à son implémentation et ses tests.</dd>
+  <dt>UML</dt><dd><span class="full">Unified Modeling Language.</span> Le langage de modélisation standard : classes, cas d'utilisation, activités, états, séquences.</dd>
+  <dt>User story</dt><dd>Une exigence agile très courte : « En tant que…, je veux… afin de… ».</dd>
+</dl>
+
+<!-- ============================================================ -->
+<h2 id="quiz"><span class="num">?</span>Quiz d'auto-évaluation</h2>
+<p>Répondez à voix haute avant d'ouvrir la réponse.</p>
+<details><summary>Quelle différence entre un besoin et une exigence ?</summary><p>Le besoin est exprimé par l'utilisateur (un manque, un désir : « j'ai besoin de… »). L'exigence est une caractéristique que la solution doit avoir (« le système doit… »).</p></details>
+<details><summary>Citez les trois catégories d'exigences et donnez le test pour les distinguer.</summary><p>Fonctionnelle, non fonctionnelle (qualité) et contrainte. Si on retire l'exigence et que le système perd une fonction, elle était fonctionnelle ; s'il fait la même chose moins bien, non fonctionnelle ; si elle venait d'une décision extérieure qui limite les solutions, c'était une contrainte.</p></details>
+<details><summary>Classez : « Le système doit être rétabli dans un délai maximum de 60 minutes suite à erreur type 1. »</summary><p>Non fonctionnelle (disponibilité) : la fonction existe déjà, l'exigence fixe un niveau mesurable.</p></details>
+<details><summary>Classez : « Le système de médiathèque doit être capable de recevoir des données d'une autre médiathèque. »</summary><p>Fonctionnelle, de type exigence d'interface. Ce serait une contrainte seulement si un format ou un protocole était imposé de l'extérieur.</p></details>
+<details><summary>Que signifient DOIT, DEVRAIT et DEVRA ?</summary><p>DOIT : obligatoire au contrat, son absence permet de refuser le produit. DEVRAIT : souhaitée, non obligatoire. DEVRA : à intégrer plus tard, elle deviendra obligatoire.</p></details>
+<details><summary>Pourquoi « Le site doit être rapide et sécurisé » est-elle une mauvaise exigence ?</summary><p>Deux exigences en une (« et »), deux termes vagues sans seuil, donc aucun critère d'acceptation : on ne pourra jamais dire si elle est satisfaite.</p></details>
+<details><summary>Citez les cinq altérations du langage naturel.</summary><p>Nominalisation, nom sans indice de référence, quantificateur universel, condition incomplète, verbe incomplet.</p></details>
+<details><summary>Expliquez les trois facteurs de Kano et comment trouver chacun.</summary><p>Base : attendu sans être dit, très forte insatisfaction s'il manque ; on le trouve par observation ou documents. Performance : demandé explicitement, la satisfaction suit le niveau atteint ; on le trouve par enquête. Attraction : bonne surprise, ne manque pas s'il est absent ; on le trouve par créativité.</p></details>
+<details><summary>Différence entre périmètre du système et limite du contexte ?</summary><p>Le périmètre sépare le système à développer de son contexte. La limite du contexte sépare le contexte (pertinent) du reste de l'environnement (sans intérêt).</p></details>
+<details><summary>Combien un CU a-t-il de scénarios nominaux, alternatifs et d'exception ?</summary><p>Un et un seul nominal ; de 0 à n alternatifs ; de 0 à n d'exception.</p></details>
+<details><summary>Include ou extend : « Retirer un montant » et « vérifier la solvabilité » ?</summary><p>Include : la vérification est faite systématiquement. Extend correspond à un complément facultatif, comme « vérifier la disponibilité du produit » lors d'une commande.</p></details>
+<details><summary>Quels modèles UML pour les perspectives structurelle, fonctionnelle et comportementale ?</summary><p>Structurelle : diagramme de classes. Fonctionnelle : DFD et diagramme d'activités. Comportementale : diagramme d'états.</p></details>
+<details><summary>Citez les six principes de validation.</summary><p>Impliquer les bonnes parties prenantes ; séparer découverte et correction ; varier les points de vue ; changer de forme de documentation ; construire des artefacts ; répéter la validation.</p></details>
+<details><summary>Quelles sont les quatre étapes et les six rôles d'une inspection ?</summary><p>Étapes : préparation, vue d'ensemble, détection des défauts, consolidation. Rôles : modérateur, auteur, lecteur, inspecteur, scribe, organisateur.</p></details>
+<details><summary>Citez les cinq types de conflits.</summary><p>De contenu, d'intérêts, de valeurs, interpersonnel, de structure.</p></details>
+<details><summary>À quoi sert la traçabilité ? Donnez trois avantages.</summary><p>Vérifier qu'une exigence est implémentée, repérer les fonctions superflues et les exigences sans origine, mesurer l'impact d'un changement (aussi : réutilisation, responsabilité, maintenance).</p></details>
+<details><summary>Qu'est-ce qu'une baseline ?</summary><p>Un référentiel d'exigences validé et figé, qui sert de point de comparaison ; les changements relient les baselines sans effacer l'historique.</p></details>
+<details><summary>Que dit un très grand nombre de demandes de changement ?</summary><p>Que l'ingénierie des exigences a été mal menée au départ. À l'inverse, presque aucune demande signale un désintérêt des parties prenantes.</p></details>
+
+<footer>
+  <p>Synthèse du support « Ingénierie des besoins / exigences » (version apprenant V1, référentiel IREB, 169 diapositives) du module Sécurité d'un SI. Les explications en langage courant, les exemples hors cours (voiture pour Kano, exigences du club de tennis) et la réécriture d'exigence sont ajoutés pour la révision et ne viennent pas du support.</p>
+  <p>Mise à jour : 17 novembre 2026.</p>
+</footer>
+
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('themeBtn');
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem('theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
