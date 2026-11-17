@@ -550,7 +550,7 @@ D'après tes notes de séance, il faudra modéliser un flux de données sous for
 Le réflexe à avoir pour chaque élément : <em>de quel côté de la frontière est-il vraiment, et qui émet vraiment ce flux ?</em></div>
 
 <p>Voici une version corrigée qui applique ces quatre points. C'est une proposition faite à partir de la fiche HexaFret, non validée par le prof. Les flux en rouge traversent la frontière de confiance : ce sont eux qu'on qualifie en priorité.</p>
-<svg viewBox="0 0 760 400" role="img" aria-label="Diagramme de flux HexaFret corrigé : client B2B, portail, chatbot, base, WMS et TMS, avec les flux vers l'ERP SaaS, le transporteur et l'API LLM qui traversent la frontière de confiance.">
+<div class="svg-wrap"><svg viewBox="0 0 760 400" role="img" aria-label="Diagramme de flux HexaFret corrigé : client B2B, portail, chatbot, base, WMS et TMS, avec les flux vers l'ERP SaaS, le transporteur et l'API LLM qui traversent la frontière de confiance.">
   <defs>
     <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
     <marker id="fr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--c)"/></marker>
@@ -597,7 +597,7 @@ Le réflexe à avoir pour chaque élément : <em>de quel côté de la frontière
   <text x="575" y="184" text-anchor="middle" class="s-sub">EDI</text>
   <line x1="350" y1="216" x2="598" y2="318" stroke="var(--c)" stroke-width="2" marker-end="url(#fr)"/>
   <text x="470" y="290" class="s-sub" fill="var(--c)">prompts, données client</text>
-</svg>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
 <p>On voit tout de suite les cinq flux qui franchissent la frontière : deux entrent depuis Internet (commande, question), trois sortent vers des tiers (volumes vers l'ERP SaaS, bordereaux EDI vers le transporteur, prompts et données personnelles vers le fournisseur du LLM). Pour compléter à l'examen : les flux d'administration de l'infogérant vers le WMS et les sauvegardes, les plus oubliés.</p>
 
 <h3>Les zones de confiance</h3>
