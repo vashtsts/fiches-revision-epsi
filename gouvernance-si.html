@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Révision gouvernance SI</title>
+<meta name="description" content="Fiche de révision du cours Gouvernance et performance d'un SI : alignement stratégique, Well-Architected Framework, fiabilité, sécurité et identité.">
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #efede6;
+  --text: #1e2124;
+  --muted: #5c6166;
+  --border: #dcd9cf;
+  --accent: #1f6f8b;
+  --accent-soft: #e2eff3;
+  --warn: #9a4a0b;
+  --warn-soft: #fbeedd;
+  --ok: #2d6a3e;
+  --ok-soft: #e4f1e7;
+  --d: #2563a8; --i: #7a3fa0; --c: #b0372b; --p: #2d7a4b;
+  --shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181b; --surface: #1d2125; --surface-2: #252a2f; --text: #e7e9eb; --muted: #a2a9b0;
+    --border: #343a40; --accent: #6cc0dc; --accent-soft: #1d3540; --warn: #f0a35c; --warn-soft: #3a2a1a;
+    --ok: #79c58f; --ok-soft: #1c3324; --d: #6aa6ec; --i: #c08ae0; --c: #ef7d70; --p: #6fca95;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181b; --surface: #1d2125; --surface-2: #252a2f; --text: #e7e9eb; --muted: #a2a9b0;
+  --border: #343a40; --accent: #6cc0dc; --accent-soft: #1d3540; --warn: #f0a35c; --warn-soft: #3a2a1a;
+  --ok: #79c58f; --ok-soft: #1c3324; --d: #6aa6ec; --i: #c08ae0; --c: #ef7d70; --p: #6fca95;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top { padding: 40px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.kicker { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-size: clamp(26px, 6vw, 36px); line-height: 1.2; margin: 6px 0 10px; }
+h2 { font-size: 24px; margin: 56px 0 8px; padding-top: 8px; scroll-margin-top: 70px; }
+h2 .num { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 18px; margin: 32px 0 8px; scroll-margin-top: 70px; }
+p { margin: 10px 0; }
+.lead { color: var(--muted); font-size: 17px; }
+a { color: var(--accent); }
+nav.toc {
+  position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--border); padding: 8px 0; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+  overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;
+}
+nav.toc a {
+  display: inline-block; text-decoration: none; color: var(--text); font-size: 14px;
+  padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); margin-right: 6px; background: var(--surface);
+}
+nav.toc a:hover { border-color: var(--accent); color: var(--accent); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; margin: 14px 0; box-shadow: var(--shadow);
+}
+.key {
+  background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.key strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); margin-bottom: 2px; }
+.trap {
+  background: var(--warn-soft); border-left: 4px solid var(--warn); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.trap strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--warn); margin-bottom: 2px; }
+.ex {
+  background: var(--ok-soft); border-left: 4px solid var(--ok); border-radius: 6px;
+  padding: 12px 16px; margin: 16px 0;
+}
+.ex strong:first-child { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--ok); margin-bottom: 2px; }
+.table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.n, th.n { text-align: center; white-space: nowrap; }
+.grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 12px 0; }
+.grid .card { margin: 0; }
+.card h4 { margin: 0 0 4px; font-size: 15px; }
+.card p { margin: 4px 0 0; font-size: 14.5px; color: var(--muted); }
+.tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); margin-right: 4px; }
+.D { color: var(--d); } .I { color: var(--i); } .C { color: var(--c); } .P { color: var(--p); }
+.formula {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--surface-2);
+  border-radius: 6px; padding: 10px 12px; margin: 10px 0; font-size: 15px; overflow-x: auto;
+}
+dl.gloss { margin: 12px 0; }
+dl.gloss dt { font-weight: 700; margin-top: 12px; }
+dl.gloss dd { margin: 2px 0 0 0; color: var(--text); }
+dl.gloss dd .full { color: var(--muted); font-style: italic; }
+details {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; margin: 8px 0;
+}
+details summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 6px; }
+svg { max-width: 100%; height: auto; display: block; margin: 12px auto; }
+.svg-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 12px 0; }
+.svg-wrap svg { min-width: 600px; margin: 0 auto; }
+.svg-hint { display: none; font-size: 13px; color: var(--muted); margin: -4px 0 8px; }
+@media (max-width: 600px) { .svg-hint { display: block; } }
+svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.s-box { fill: var(--surface); stroke: var(--border); }
+.s-box-acc { fill: var(--accent-soft); stroke: var(--accent); }
+.s-txt { fill: var(--text); font-size: 14px; }
+.s-sub { fill: var(--muted); font-size: 12px; }
+.s-acc { fill: var(--accent); font-size: 13px; font-weight: 700; }
+.s-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.s-down { stroke: var(--c); stroke-width: 2.5; fill: none; }
+.s-up { stroke: var(--d); stroke-width: 2.5; fill: none; }
+footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+.theme-btn {
+  float: right; font: inherit; font-size: 13px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; cursor: pointer;
+}
+@media (max-width: 520px) {
+  body { font-size: 15.5px; }
+  h2 { font-size: 21px; }
+  th, td { padding: 7px 8px; font-size: 13.5px; }
+}
+@media print {
+  nav.toc, .theme-btn { display: none; }
+  details { border: none; padding: 0; }
+  details > *:not(summary) { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Changer de thème">Thème</button>
+  <div class="kicker">EPSI · Master 2 · Gouvernance et performance d'un SI</div>
+  <h1>Gouvernance et performance d'un système d'information</h1>
+  <p class="lead">Fiche de révision du cours. Comment on s'assure qu'un SI sert la stratégie de l'entreprise, puis comment on juge s'il est bien construit avec les cinq piliers du Well-Architected Framework. Deux piliers sont creusés : la fiabilité (RTO, RPO, cinq principes de conception) et la sécurité vue par l'identité (Zero Trust, authentification, autorisation, cycle de vie des comptes).</p>
+</header>
+
+<nav class="toc" aria-label="Sommaire">
+  <a href="#vue">Vue d'ensemble</a><a href="#socle">1 · Socle</a><a href="#alignement">2 · Alignement</a><a href="#waf">3 · Cinq piliers</a><a href="#fiabilite">4 · Fiabilité</a><a href="#zero-trust">5 · Zero Trust</a><a href="#authn">6 · AuthN</a><a href="#authz">7 · AuthZ</a><a href="#cycle-de-vie">8 · Cycle de vie</a><a href="#ecosysteme">9 · Écosystème</a><a href="#pieges">Pièges</a><a href="#glossaire">Glossaire</a><a href="#quiz">Quiz</a>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="vue"><span class="num">0</span>La vue d'ensemble en deux minutes</h2>
+
+<p>Une entreprise met de l'argent, du temps et des gens dans son informatique. Le cours tient en deux questions. La première relève de la <strong>gouvernance</strong> : tout cela sert-il vraiment la stratégie de l'entreprise ? La seconde relève de la <strong>performance</strong> : le système tient-il la route quand on le sollicite ? Pour y répondre, on définit ce qu'est un SI, on pose la notion d'<strong>alignement stratégique</strong>, puis on s'appuie sur une grille de qualité reconnue, le <strong>Well-Architected Framework</strong> (WAF) de Microsoft, organisé en cinq piliers.</p>
+
+<div class="key"><strong>La phrase qui résume le cours</strong>
+Le SI est un moyen au service de l'entreprise, pas une fin. La gouvernance vérifie qu'il vise les bons objectifs ; le WAF vérifie qu'il est bien construit. Et comme on ne peut pas tout maximiser à la fois, concevoir un système, c'est arbitrer des compromis selon les priorités de l'organisation.</div>
+
+<div class="svg-wrap"><svg viewBox="0 0 764 190" role="img" aria-label="Fil du cours : la stratégie fixe le cap, la gouvernance décide et contrôle, l'alignement vérifie que les projets servent les objectifs, le WAF vérifie que le système est bien construit. Deux zooms : fiabilité et sécurité par l'identité.">
+  <defs><marker id="ar0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <rect x="4" y="16" width="168" height="90" rx="8" class="s-box"/>
+  <text x="88" y="46" text-anchor="middle" class="s-txt" font-weight="700">Stratégie</text>
+  <text x="88" y="68" text-anchor="middle" class="s-sub">le cap fixé</text>
+  <text x="88" y="84" text-anchor="middle" class="s-sub">par la direction</text>
+  <rect x="200" y="16" width="168" height="90" rx="8" class="s-box-acc"/>
+  <text x="284" y="46" text-anchor="middle" class="s-txt" font-weight="700">Gouvernance</text>
+  <text x="284" y="68" text-anchor="middle" class="s-sub">qui décide, sur quels</text>
+  <text x="284" y="84" text-anchor="middle" class="s-sub">critères, quel contrôle</text>
+  <rect x="396" y="16" width="168" height="90" rx="8" class="s-box-acc"/>
+  <text x="480" y="46" text-anchor="middle" class="s-txt" font-weight="700">Alignement</text>
+  <text x="480" y="68" text-anchor="middle" class="s-sub">les projets SI servent</text>
+  <text x="480" y="84" text-anchor="middle" class="s-sub">les objectifs</text>
+  <rect x="592" y="16" width="168" height="90" rx="8" class="s-box-acc"/>
+  <text x="676" y="46" text-anchor="middle" class="s-txt" font-weight="700">Qualité (WAF)</text>
+  <text x="676" y="68" text-anchor="middle" class="s-sub">le système est bien</text>
+  <text x="676" y="84" text-anchor="middle" class="s-sub">construit : 5 piliers</text>
+  <line x1="174" y1="61" x2="196" y2="61" class="s-line" marker-end="url(#ar0)"/>
+  <line x1="370" y1="61" x2="392" y2="61" class="s-line" marker-end="url(#ar0)"/>
+  <line x1="566" y1="61" x2="588" y2="61" class="s-line" marker-end="url(#ar0)"/>
+  <rect x="4" y="132" width="756" height="44" rx="8" fill="none" stroke="var(--border)" stroke-dasharray="5 4"/>
+  <text x="382" y="159" text-anchor="middle" class="s-sub">Deux zooms du cours : la fiabilité (RTO, RPO, cinq principes) et la sécurité par l'identité (Zero Trust, cycle de vie)</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+
+<h3>Les quatre choses à savoir par cœur</h3>
+<div class="grid">
+  <div class="card"><h4>Les cinq piliers du WAF</h4><p>Fiabilité, sécurité, optimisation des coûts, excellence opérationnelle, efficacité des performances. On ne les maximise pas tous à la fois.</p></div>
+  <div class="card"><h4>RTO et RPO</h4><p>RTO : combien de temps sans service on tolère. RPO : combien de données récentes on accepte de perdre. Les deux s'expriment en temps.</p></div>
+  <div class="card"><h4>Les trois principes du Zero Trust</h4><p>Vérifier explicitement, utiliser le moindre privilège, supposer une violation. Devise : « ne jamais faire confiance, toujours vérifier ».</p></div>
+  <div class="card"><h4>Joiner-Mover-Leaver</h4><p>Le cycle de vie d'une identité : rejoindre, bouger, quitter. Un compte jamais fermé au départ devient une porte d'entrée.</p></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="socle"><span class="num">1</span>Le socle : SI, gouvernance, performance</h2>
+
+<h3>Qu'est-ce qu'un système d'information ?</h3>
+<p>Prenez une commande de colis en ligne. Derrière le clic, il y a un site qui prend la commande, une base de données qui l'enregistre, un logiciel qui prévient l'entrepôt, un autre qui débite la carte, un employé qui prépare le carton et un transporteur qui scanne l'étiquette. Tout cet ensemble forme le <strong>système d'information</strong> (SI).</p>
+<div class="key"><strong>Définition</strong>
+Un système d'information est l'ensemble organisé des ressources (humaines, matérielles, logicielles, données et procédures) qui permet de <strong>collecter, stocker, traiter et diffuser l'information</strong> au service des activités d'une organisation.</div>
+<p>Deux idées à retenir. Un SI n'est <strong>pas</strong> que de la technique : c'est la technologie, plus les gens, plus les façons de faire. Et il existe <strong>pour l'entreprise</strong>, pas pour lui-même : c'est un moyen. Toute la suite du cours découle de cette phrase.</p>
+
+<h3>La gouvernance du SI</h3>
+<p>Quand le SI grossit (logiciels, projets, factures de cloud, demandes des équipes), une question devient pressante : qui décide de quoi, et sur quels critères ? Faut-il migrer vers le cloud, racheter tel outil, faire passer le projet A avant le projet B ? Sans règle du jeu, chacun tire dans son coin. La <strong>gouvernance du SI</strong> est l'ensemble des <strong>règles, des instances de décision et des responsabilités</strong> qui encadrent le pilotage du SI. Elle répond à trois questions :</p>
+<div class="table-wrap"><table>
+<tr><th>Question</th><th>Exemples de réponses</th></tr>
+<tr><td><strong>Qui décide ?</strong></td><td>Direction générale, DSI (direction des systèmes d'information), comités, métiers</td></tr>
+<tr><td><strong>Sur quels critères ?</strong></td><td>Valeur pour l'entreprise, coût, risque, conformité</td></tr>
+<tr><td><strong>Comment contrôle-t-on</strong> que les décisions sont tenues ?</td><td>Indicateurs, audits, arbitrages</td></tr>
+</table></div>
+<div class="ex"><strong>Analogie du cours : le code de la route</strong>
+Le code de la route ne conduit pas la voiture à votre place. Il fixe les priorités, les limites et les responsabilités pour que tout le monde circule sans se rentrer dedans. La gouvernance ne « fait » pas l'informatique : elle fixe les priorités et tranche les conflits, pour que le SI serve la stratégie et pas l'inverse.</div>
+
+<h3>La performance d'un SI : deux plans</h3>
+<p>Le réflexe trompeur consiste à entendre « performance » comme « vitesse ». C'est une partie de l'histoire seulement. La performance d'un SI se juge sur deux plans qu'il ne faut jamais confondre :</p>
+<div class="grid">
+  <div class="card"><h4>Performance technique</h4><p>Le système est-il rapide, disponible, capable d'encaisser la charge, sécurisé, réparable ? C'est la question de l'ingénieur.</p></div>
+  <div class="card"><h4>Performance de valeur</h4><p>Tout cela sert-il réellement les objectifs de l'entreprise, à un coût raisonnable ? C'est la question du dirigeant.</p></div>
+</div>
+<div class="ex"><strong>Exemple résolu · deux systèmes, deux verdicts</strong>
+Un SI ultra-rapide et ultra-sécurisé qui automatise un processus dont plus personne ne se sert : techniquement performant, mais sans valeur, l'argent est gaspillé. À l'inverse, un outil un peu lent qui fait gagner deux heures par jour à cent employés : modestement performant sur le plan technique, très performant en valeur. La vraie performance combine les deux plans.</div>
+
+<!-- ============================================================ -->
+<h2 id="alignement"><span class="num">2</span>L'alignement stratégique d'un SI</h2>
+
+<h3>Le problème que ça résout</h3>
+<p>Dans beaucoup d'organisations, l'informatique et la stratégie vivent dans deux mondes séparés. La direction fixe des objectifs (« gagner 10 % de clients cette année ») ; l'équipe technique achète des serveurs et développe des outils. Rien ne garantit que ce que fait la technique rapproche vraiment l'entreprise de ses objectifs. On peut construire un SI magnifique qui vise à côté de la cible. L'<strong>alignement stratégique</strong> est le point de contact entre le SI (un moyen) et la gouvernance (qui le garde au service de la stratégie).</p>
+
+<h3>La cible : stratégie, objectifs, plans</h3>
+<p>Le support illustre l'idée par une cible de fléchettes portant trois mots : <em>strategy</em>, <em>goals</em>, <em>plans</em>.</p>
+<div class="svg-wrap"><svg viewBox="0 0 640 260" role="img" aria-label="Une cible : l'anneau extérieur est la stratégie, l'anneau intérieur les objectifs, le centre la cible. Une flèche, les plans et projets SI, vise le centre.">
+  <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
+  <circle cx="150" cy="134" r="112" class="s-box"/>
+  <circle cx="150" cy="134" r="76" class="s-box"/>
+  <circle cx="150" cy="134" r="38" class="s-box-acc"/>
+  <text x="150" y="40" text-anchor="middle" class="s-sub">Stratégie</text>
+  <text x="150" y="76" text-anchor="middle" class="s-sub">Objectifs</text>
+  <text x="150" y="139" text-anchor="middle" class="s-acc">Centre</text>
+  <line x1="352" y1="40" x2="172" y2="122" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#ar1)"/>
+  <text x="360" y="44" class="s-acc">La flèche : plans et projets SI</text>
+  <text x="330" y="104" class="s-txt" font-weight="700">Stratégie : le cap</text>
+  <text x="330" y="122" class="s-sub">où l'entreprise veut aller</text>
+  <text x="330" y="152" class="s-txt" font-weight="700">Objectifs : la cible</text>
+  <text x="330" y="170" class="s-sub">des buts concrets et mesurables</text>
+  <text x="330" y="200" class="s-txt" font-weight="700">Aligné = la flèche touche le centre</text>
+  <text x="330" y="218" class="s-sub">un projet qui ne sert aucun objectif est une flèche perdue</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+<div class="table-wrap"><table>
+<tr><th>Mot</th><th>Rôle dans l'image</th><th>Exemple du cours</th></tr>
+<tr><td><strong>Stratégie</strong> (<em>strategy</em>)</td><td>Le cap : où l'entreprise veut aller</td><td>« Devenir le leader du marché sur la livraison en 24 h »</td></tr>
+<tr><td><strong>Objectifs</strong> (<em>goals</em>)</td><td>La cible : des buts concrets et mesurables qui traduisent le cap</td><td>« Réduire le délai de traitement d'une commande de 48 h à 12 h »</td></tr>
+<tr><td><strong>Plans</strong></td><td>La flèche : les moyens mis en œuvre, dont le SI</td><td>Le logiciel qui accélère le traitement des commandes</td></tr>
+</table></div>
+<p><strong>Aligner le SI</strong>, c'est faire en sorte que la flèche (les projets informatiques) parte vers le centre (les objectifs). Un projet qui n'aide aucun objectif de l'entreprise est une flèche tirée n'importe où : du budget et du temps dépensés sans rapprocher l'organisation de son but.</p>
+
+<h3>Le pont vers la qualité technique</h3>
+<p>Viser le bon objectif ne suffit pas si le système tombe en panne, coûte une fortune ou se fait pirater. Il faut aussi vérifier qu'il est <strong>bien construit</strong>. C'est le rôle de l'<strong>architecte de solutions</strong> : livrer de la valeur métier tout en trouvant un équilibre entre trois tensions permanentes, les <strong>risques</strong>, les <strong>coûts</strong> et les <strong>capacités</strong> techniques. L'architecture fait le pont entre les besoins de l'entreprise et les moyens techniques : c'est l'alignement stratégique vu côté construction. La grille qui sert à juger cette construction, c'est le WAF.</p>
+
+<!-- ============================================================ -->
+<h2 id="waf"><span class="num">3</span>Le Well-Architected Framework : cinq piliers et leurs compromis</h2>
+
+<div class="key"><strong>Définition</strong>
+Le <strong>Well-Architected Framework</strong> (littéralement « cadre du bien-architecturé ») est un ensemble de principes qui guident la conception de solutions de qualité. Il a été formalisé par Microsoft pour son cloud Azure, mais le support le dit lui-même : ses grandes idées sont universelles, elles valent quel que soit le fournisseur, et servent de liste de contrôle pour juger n'importe quel SI.</div>
+
+<div class="svg-wrap"><svg viewBox="0 0 760 290" role="img" aria-label="Un temple : le toit est une charge de travail de qualité, cinq colonnes portent les piliers fiabilité, sécurité, optimisation des coûts, excellence opérationnelle, efficacité des performances, et le socle est l'arbitrage des compromis.">
+  <polygon points="20,72 380,12 740,72" class="s-box-acc"/>
+  <text x="380" y="58" text-anchor="middle" class="s-txt" font-weight="700">Une charge de travail de qualité</text>
+  <rect x="26" y="82" width="132" height="140" rx="6" class="s-box"/>
+  <text x="92" y="112" text-anchor="middle" class="s-txt" font-weight="700">Fiabilité</text>
+  <text x="92" y="160" text-anchor="middle" class="s-sub">tenir malgré</text>
+  <text x="92" y="176" text-anchor="middle" class="s-sub">les pannes</text>
+  <rect x="173" y="82" width="132" height="140" rx="6" class="s-box"/>
+  <text x="239" y="112" text-anchor="middle" class="s-txt" font-weight="700">Sécurité</text>
+  <text x="239" y="160" text-anchor="middle" class="s-sub">résister aux attaques</text>
+  <text x="239" y="176" text-anchor="middle" class="s-sub">(CIA, Zero Trust)</text>
+  <rect x="320" y="82" width="132" height="140" rx="6" class="s-box"/>
+  <text x="386" y="112" text-anchor="middle" class="s-txt" font-weight="700">Optimisation</text>
+  <text x="386" y="130" text-anchor="middle" class="s-txt" font-weight="700">des coûts</text>
+  <text x="386" y="160" text-anchor="middle" class="s-sub">dépenser utile</text>
+  <text x="386" y="176" text-anchor="middle" class="s-sub">(ROI)</text>
+  <rect x="467" y="82" width="132" height="140" rx="6" class="s-box"/>
+  <text x="533" y="112" text-anchor="middle" class="s-txt" font-weight="700">Excellence</text>
+  <text x="533" y="130" text-anchor="middle" class="s-txt" font-weight="700">opérationnelle</text>
+  <text x="533" y="160" text-anchor="middle" class="s-sub">bien exploiter</text>
+  <text x="533" y="176" text-anchor="middle" class="s-sub">(DevOps)</text>
+  <rect x="614" y="82" width="132" height="140" rx="6" class="s-box"/>
+  <text x="680" y="112" text-anchor="middle" class="s-txt" font-weight="700">Efficacité des</text>
+  <text x="680" y="130" text-anchor="middle" class="s-txt" font-weight="700">performances</text>
+  <text x="680" y="160" text-anchor="middle" class="s-sub">encaisser</text>
+  <text x="680" y="176" text-anchor="middle" class="s-sub">la charge</text>
+  <rect x="20" y="232" width="720" height="44" rx="6" class="s-box-acc"/>
+  <text x="380" y="259" text-anchor="middle" class="s-txt">Socle : arbitrer les compromis selon les priorités de l'organisation</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+
+<p>Le vocabulaire Microsoft parle de <strong>charge de travail</strong> (<em>workload</em>) : l'application et tout ce qui la fait tourner (code, données, infrastructure, opérations). Pour chaque pilier, la question est la même : « ma charge de travail est-elle bonne là-dessus ? ».</p>
+
+<div class="table-wrap"><table>
+<tr><th>Pilier</th><th>Objectif (tel que le quiz du support l'associe)</th><th>Notions attachées</th></tr>
+<tr><td><strong>Fiabilité</strong></td><td>Améliorer la résilience et la récupération</td><td>Résilient, disponible, récupérable (détail en partie 4)</td></tr>
+<tr><td><strong>Sécurité</strong></td><td>Renforcer la sécurité par la triade CIA et le Zero Trust</td><td>Résister aux attaques, limiter les dégâts sur la réputation, les opérations et les finances</td></tr>
+<tr><td><strong>Optimisation des coûts</strong></td><td>Évaluer le ROI et les contraintes financières</td><td>Piloté par les objectifs métier ; allouer le budget, prioriser, tirer le maximum de chaque ressource</td></tr>
+<tr><td><strong>Excellence opérationnelle</strong></td><td>Garantir la qualité par des flux de travail standardisés</td><td>DevOps, observabilité, gestion des mises en production ; moins de variabilité, d'erreurs humaines et d'interruptions</td></tr>
+<tr><td><strong>Efficacité des performances</strong></td><td>Optimiser la capacité à s'ajuster aux variations de la demande</td><td>Scalabilité, élasticité, surveillance de la capacité</td></tr>
+</table></div>
+
+<h3>Les termes à comprendre</h3>
+<ul>
+  <li><strong>Triade CIA</strong> : les trois propriétés à protéger. <strong>C</strong>onfidentialité (seuls les autorisés voient la donnée), <strong>I</strong>ntégrité (la donnée n'est pas altérée), disponibilité (la donnée reste accessible ; en anglais <em>Availability</em>, d'où le « A »). C'est la boussole de toute la sécurité.</li>
+  <li><strong>Zero Trust</strong> (« zéro confiance ») : ne faire confiance à personne par défaut, même à l'intérieur du réseau, et vérifier chaque accès. On abandonne le « château fort » au profit d'un contrôle à chaque porte (détail en partie 5).</li>
+  <li><strong>ROI</strong> (<em>Return On Investment</em>, retour sur investissement) : ce que rapporte une dépense comparé à ce qu'elle coûte. Dans le cloud, la facture peut grimper sans qu'on le voie ; ce pilier vérifie que chaque euro est utile.</li>
+  <li><strong>DevOps</strong> : une manière de travailler qui rapproche le développement (<em>Dev</em>) et l'exploitation (<em>Ops</em>) : livraisons automatisées, mises en production maîtrisées. Les <strong>flux de travail standardisés</strong> sont des procédures identiques et répétables, pour ne pas improviser à chaque fois.</li>
+  <li><strong>Observabilité</strong> : la capacité à voir en temps réel ce que fait le système, grâce aux journaux (<em>logs</em>), aux métriques et aux traces.</li>
+  <li><strong>Scalabilité</strong> : la capacité à monter en puissance quand la demande augmente. <strong>Élasticité</strong> : grandir <em>et</em> rétrécir automatiquement, pour libérer les ressources quand la demande baisse et ne pas payer dans le vide.</li>
+</ul>
+<div class="trap"><strong>Scalabilité ou élasticité ?</strong>
+Un système scalable sait grandir. Un système élastique sait grandir et rétrécir tout seul. Le pilier Efficacité des performances demande les deux réflexes : monter en charge lors d'un pic (un produit qui devient viral) et libérer les ressources pendant le creux (la nuit).</div>
+
+<h3>Les compromis : on ne maximise pas tout à la fois</h3>
+<p>C'est le point le plus important de la partie, et le piège d'examen classique. On aimerait un système au sommet des cinq piliers en même temps : c'est impossible sans y mettre le prix (financier, en délais, en agilité). Pousser un pilier se paie souvent sur un autre.</p>
+<div class="ex"><strong>Exemple résolu du cours · la banque et ses paiements</strong>
+Une banque veut une fiabilité maximale sur son service de paiement. Elle duplique tout sur trois régions géographiques (c'est de la <strong>redondance</strong>). Bilan : la <em>fiabilité</em> monte (une région tombe, une autre prend le relais) ; l'<em>optimisation des coûts</em> chute (on paie trois fois l'infrastructure) ; l'<em>excellence opérationnelle</em> se complique (trois environnements à maintenir et à surveiller). Pour une banque, la fiabilité du paiement justifie le surcoût. Pour un blog personnel, non.</div>
+<div class="key"><strong>À retenir</strong>
+Aucun effet n'est bon ou mauvais dans l'absolu : les priorités et les besoins diffèrent selon chaque application. Concevoir une architecture, c'est choisir ses compromis en connaissance de cause, guidé par les coûts, les priorités et les risques. Les cinq piliers servent de guide pour couvrir chaque aspect d'une solution ; une base solide permet ensuite d'innover et de gagner la confiance des utilisateurs.</div>
+<div class="trap"><strong>Limite de couverture</strong>
+Le parcours officiel compte un module détaillé par pilier. Seuls le module d'ensemble sur les piliers et le module Fiabilité ont été collectés : pour la sécurité, les coûts, l'excellence opérationnelle et les performances, cette fiche ne contient que la présentation générale ci-dessus.</div>
+
+<!-- ============================================================ -->
+<h2 id="fiabilite"><span class="num">4</span>La fiabilité en détail</h2>
+
+<p>La fiabilité est le pilier que le module approfondit le plus. Le scénario redouté : le système tombe et ne se relève pas. Être fiable, c'est <strong>continuer de fonctionner quand un composant lâche</strong>.</p>
+<div class="grid">
+  <div class="card"><h4>Résilient</h4><p>Il détecte une défaillance, y résiste et se répare, souvent automatiquement.</p></div>
+  <div class="card"><h4>Disponible</h4><p>Les utilisateurs y accèdent quand ils en ont besoin, à la qualité promise.</p></div>
+  <div class="card"><h4>Récupérable</h4><p>Après un incident, du petit bug à la catastrophe, il revient à la normale dans le délai attendu.</p></div>
+</div>
+<p>Les mesures de fiabilité ne se rajoutent pas à la fin : elles vivent dans le <strong>code applicatif</strong>, l'<strong>infrastructure</strong> et les <strong>opérations</strong>. Et elles se règlent sur les exigences métier : viser une fiabilité extrême sur un service que personne n'utilise, c'est oublier les compromis.</p>
+
+<h3>RTO et RPO : deux chiffres qui cadrent tout</h3>
+<div class="svg-wrap"><svg viewBox="0 0 760 210" role="img" aria-label="Ligne de temps : dernière copie des données, puis incident, puis service rétabli. Le RPO couvre l'intervalle entre la dernière copie et l'incident, ce sont les données perdues. Le RTO couvre l'intervalle entre l'incident et le rétablissement, c'est le temps sans service.">
+  <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <line x1="30" y1="110" x2="730" y2="110" class="s-line" marker-end="url(#ar2)"/>
+  <text x="726" y="96" text-anchor="end" class="s-sub">temps</text>
+  <circle cx="170" cy="110" r="6" fill="var(--accent)"/>
+  <circle cx="400" cy="110" r="6" fill="var(--c)"/>
+  <circle cx="640" cy="110" r="6" fill="var(--ok)"/>
+  <text x="170" y="62" text-anchor="middle" class="s-txt" font-weight="700">Dernière copie</text>
+  <text x="170" y="80" text-anchor="middle" class="s-sub">sauvegarde ou réplication</text>
+  <text x="400" y="62" text-anchor="middle" class="s-txt" font-weight="700">Incident</text>
+  <text x="400" y="80" text-anchor="middle" class="s-sub">panne, sinistre</text>
+  <text x="640" y="62" text-anchor="middle" class="s-txt" font-weight="700">Service rétabli</text>
+  <text x="640" y="80" text-anchor="middle" class="s-sub">retour à la normale</text>
+  <path d="M172,130 v12 H398 v-12" class="s-down"/>
+  <path d="M402,130 v12 H638 v-12" class="s-up"/>
+  <text x="285" y="168" text-anchor="middle" class="s-txt" font-weight="700" style="fill: var(--c)">RPO : données perdues</text>
+  <text x="285" y="186" text-anchor="middle" class="s-sub">travail récent perdu, au pire</text>
+  <text x="520" y="168" text-anchor="middle" class="s-txt" font-weight="700" style="fill: var(--d)">RTO : temps perdu</text>
+  <text x="520" y="186" text-anchor="middle" class="s-sub">durée maximale sans service</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+<div class="table-wrap"><table>
+<tr><th>Sigle</th><th>Nom complet</th><th>Question</th><th>Exemple du cours</th></tr>
+<tr><td><strong>RTO</strong></td><td><em>Recovery Time Objective</em>, objectif de temps de récupération</td><td>En combien de temps doit-on être de nouveau debout ?</td><td>RTO de 30 secondes : le service doit être rétabli en 30 secondes au plus.</td></tr>
+<tr><td><strong>RPO</strong></td><td><em>Recovery Point Objective</em>, objectif de point de récupération</td><td>Combien de données a-t-on le droit de perdre ?</td><td>RPO de 5 minutes : on accepte de perdre au pire les 5 dernières minutes de données.</td></tr>
+</table></div>
+<div class="formula">RTO = temps perdu (combien de temps sans service)<br>RPO = données perdues (exprimé en temps, mais côté données)</div>
+<div class="trap"><strong>Le piège RTO / RPO</strong>
+Les deux s'expriment en temps, d'où la confusion. Moyen mnémotechnique du cours : <strong>T</strong> comme <strong>T</strong>emps de remise en route ; le RPO, c'est l'autre, les données. Le RPO se joue sur la fréquence des copies (plus on sauvegarde ou réplique souvent, plus il est bas) ; le RTO se joue sur la vitesse de remise en service.</div>
+
+<h3>Cinq principes, trois approches chacun</h3>
+<p>Le pilier Fiabilité se conçoit autour de <strong>cinq principes</strong>, déclinés chacun en <strong>trois approches</strong>. Le module illustre chaque principe par une entreprise fictive nommée Contoso.</p>
+<div class="table-wrap"><table>
+<tr><th class="n">#</th><th>Principe</th><th>Les trois approches</th><th>Cas</th></tr>
+<tr><td class="n">1</td><td><strong>Concevoir pour les exigences métier</strong></td><td>Identifier les cibles de fiabilité ; comprendre les engagements de la plateforme (SLA) ; déterminer les dépendances</td><td>Contoso Insurance</td></tr>
+<tr><td class="n">2</td><td><strong>Concevoir pour la résilience</strong></td><td>Déterminer les risques d'échec ; implémenter l'auto-protection ; générer la redondance</td><td>Contoso Air</td></tr>
+<tr><td class="n">3</td><td><strong>Concevoir pour la récupération</strong></td><td>Se préparer aux incidents ; traiter les données avec état ; ajouter l'auto-réparation</td><td>Contoso (analytique)</td></tr>
+<tr><td class="n">4</td><td><strong>Concevoir pour les opérations</strong></td><td>Ajouter une surveillance robuste ; prédire les problèmes ; tester les risques de fiabilité</td><td>Contoso University</td></tr>
+<tr><td class="n">5</td><td><strong>Faire simple</strong></td><td>Simplifier les composants ; normaliser le SDLC ; réduire la charge de développement et d'exploitation</td><td>Contoso Travel</td></tr>
+</table></div>
+
+<h3>Principe 1 · Concevoir pour les exigences métier</h3>
+<p>Tout part de là : savoir ce que le système doit vraiment faire, avec les parties prenantes, dans un budget réaliste. Sans cet accord commun, on fiabilise au hasard.</p>
+<ol>
+  <li><strong>Identifier les cibles de fiabilité</strong> : des objectifs chiffrés (des <em>métriques</em>) pour chaque niveau, du composant au flux utilisateur et au système entier. Sans chiffre, impossible de tester si c'est « assez fiable ». On priorise les flux importants et les exigences de conformité.</li>
+  <li><strong>Comprendre les engagements de la plateforme</strong> : le fournisseur de cloud garantit un niveau de service par un <strong>SLA</strong> (<em>Service Level Agreement</em>, contrat de niveau de service : un engagement chiffré, par exemple « 99,9 % de disponibilité »). Chaque service a son SLA, avec ses limites et ses quotas.</li>
+  <li><strong>Déterminer les dépendances</strong> : lister tout ce dont le système dépend, en interne et en externe, et se demander ce qui se passe si ça tombe. On évite ainsi les <strong>défaillances en cascade</strong>, où une brique entraîne les autres dans sa chute.</li>
+</ol>
+<div class="ex"><strong>Cas Contoso Insurance</strong>
+Cette assurance développe une application de traitement des réclamations. Elle classe ses flux et repère que « soumission et approbation de réclamation » est le plus critique, car médecins et patients en dépendent. Elle lui fixe un RTO exigeant, lit les SLA de Microsoft et déploie un niveau de service « critique pour l'entreprise » avec <strong>géoréplication active</strong> (une copie synchronisée des données dans une autre région). Elle découvre aussi que ce flux dépend d'un petit jeu de données de référence géré par une autre équipe, moins fiable que le flux lui-même. Réponse : un <strong>cache local</strong> rafraîchi chaque nuit. La dépendance faible ne peut plus faire tomber le flux fort.</div>
+
+<h3>Principe 2 · Concevoir pour la résilience</h3>
+<p>On part du principe que <strong>les pannes vont arriver</strong> et on construit le système pour les encaisser, en fonctionnalités complètes ou, à défaut, réduites.</p>
+<ol>
+  <li><strong>Déterminer les risques d'échec</strong> : pour chaque point de défaillance, analyser le cas d'échec, son <strong>rayon d'explosion</strong> (<em>blast radius</em> : l'étendue de ce que la panne casse autour d'elle) et son intensité. On sait alors où renforcer en priorité.</li>
+  <li><strong>Implémenter l'auto-protection</strong> : découper en modules pour <strong>isoler les erreurs</strong>. Exemple de mécanisme, le <strong>modèle de nouvelle tentative</strong> (<em>retry</em>) : on réessaie automatiquement une action qui a échoué, avec un délai qui s'allonge à chaque essai, jusqu'au succès ou à un nombre maximum.</li>
+  <li><strong>Générer la redondance</strong> : dupliquer pour supprimer les <strong>SPOF</strong> (<em>Single Point Of Failure</em>, point de défaillance unique : le composant dont la panne arrête tout). En <strong>actif-actif</strong>, plusieurs copies travaillent en même temps ; en <strong>actif-passif</strong>, une copie de secours prend le relais. Les <strong>zones de disponibilité</strong> (plusieurs datacenters physiquement séparés) et la <strong>géoréplication</strong> (des copies dans une autre région) en sont des formes.</li>
+</ol>
+<div class="ex"><strong>Cas Contoso Air</strong>
+La compagnie aérienne juge critique le flux « achat de billet ». Point faible repéré : la <strong>passerelle de paiement</strong> externe rejette des requêtes quand elle est surchargée. Deux réponses : un <strong>retry</strong> qui relance la demande après un court délai, puisque ces erreurs sont passagères ; un <strong>découplage</strong> entre paiement et interface par une file de messages (Azure Service Bus) : si le paiement échoue après plusieurs tentatives, le message attend dans la file au lieu de bloquer l'utilisateur. Contre la perte de données, elle passe au niveau Premium de Service Bus pour bénéficier des <strong>zones de disponibilité</strong> (trois sites séparés) et d'une réplication continue vers une <strong>région secondaire</strong> qui prend le relais si la région principale tombe.</div>
+<p>Une <strong>file de messages</strong>, c'est comme une boîte aux lettres entre deux services : l'émetteur dépose sa demande et repart, le destinataire la traite quand il peut. Si l'un des deux tombe, la demande n'est pas perdue.</p>
+
+<h3>Principe 3 · Concevoir pour la récupération</h3>
+<p>Même résilient, un système doit savoir se remettre d'un vrai sinistre : perte d'une région entière, corruption de données. C'est la <strong>reprise après sinistre</strong> (DR, <em>Disaster Recovery</em>).</p>
+<ol>
+  <li><strong>Se préparer aux incidents</strong> : des plans de récupération <strong>documentés et testés</strong>, alignés sur les objectifs de récupération, couvrant chaque composant et le système entier, avec des exercices réguliers. Un plan jamais testé ne vaut presque rien : on découvre ses trous le jour de la panne.</li>
+  <li><strong>Traiter les données avec état</strong> : un composant <strong>avec état</strong> (<em>stateful</em>) stocke des données, contrairement à un composant <strong>sans état</strong> (<em>stateless</em>) qu'on peut recréer à l'identique. Les premiers doivent pouvoir être restaurés à partir d'un dernier état correct connu. La clé, ce sont les <strong>sauvegardes</strong>, de préférence <strong>immuables</strong> (non modifiables, donc non corruptibles) et <strong>cohérentes</strong> sur le plan des transactions (pas de donnée à moitié écrite). C'est ici que se joue le RPO.</li>
+  <li><strong>Ajouter l'auto-réparation</strong> (<em>self-healing</em>) : des mécanismes qui, sans humain, récupèrent le composant touché ou basculent sur une infrastructure de secours. Moins d'intervention manuelle, c'est une résolution plus rapide et moins d'erreurs.</li>
+</ol>
+<div class="ex"><strong>Cas Contoso (solution d'analytique)</strong>
+La solution, déployée sur une seule région et peu stratégique, a pour plan de reprise « reconstruire dans une région secondaire ». Mais il n'a jamais été testé en entier. Lors d'une vraie panne régionale, l'équipe bute sur des <strong>lacunes</strong>, corrige le plan et avance ses exercices de reprise. Côté données, ses bases SQL de plus de 4 To sont placées sur des machines virtuelles avec <strong>sauvegarde automatisée</strong> ; les plus critiques sont répliquées en continu vers une instance managée pour viser le RPO le plus bas. Enfin, un vieux processus Windows qui s'arrêtait parfois est placé dans un groupe de machines surveillé en continu, avec <strong>réparation automatique</strong> : la machine défaillante est redémarrée ou recréée depuis la même image, sans humain.</div>
+
+<h3>Principe 4 · Concevoir pour les opérations</h3>
+<p>La fiabilité se joue aussi au quotidien. L'idée : <strong>voir venir les problèmes tôt</strong>, tester les échecs tôt et souvent, rendre l'état du système visible à toutes les équipes. Deux pratiques transverses : l'<strong>analyse de cause racine</strong> (trouver la vraie origine d'un incident) et le <strong>postmortem</strong> (le compte rendu après incident, sans recherche de coupable, pour apprendre).</p>
+<ol>
+  <li><strong>Ajouter une surveillance robuste</strong> : rendre le système <strong>observable</strong>, capable d'émettre de la <strong>télémétrie</strong>, c'est-à-dire les traces de son fonctionnement : journaux (<em>logs</em>, les événements), métriques (les mesures chiffrées), traces (le chemin d'une requête). En cas de panne, on doit savoir <em>quoi</em>, <em>quand</em> et <em>pourquoi</em>. <strong>Corréler</strong> ces données entre composants permet de suivre une requête de bout en bout et de repérer les <strong>goulots d'étranglement</strong>, l'endroit qui ralentit tout le reste. Ces informations aident les <strong>SRE</strong> (<em>Site Reliability Engineers</em>, ingénieurs de fiabilité) à prioriser.</li>
+  <li><strong>Prédire les problèmes</strong> : des alertes <strong>actionnables</strong> (chaque alerte appelle une action précise, sinon c'est du bruit) et <strong>hiérarchisées</strong>, avec un tri rapide. Les meilleures sont <strong>prédictives</strong> : elles signalent un souci avant qu'il ne devienne un incident.</li>
+  <li><strong>Tester les risques de fiabilité</strong> : simuler des pannes, en préproduction et en production. Les <strong>tests synthétiques</strong> sont des robots qui rejouent régulièrement les flux clés pour détecter une panne silencieuse ; les <strong>tests de chaos</strong> injectent volontairement des pannes pour vérifier que le système résiste comme prévu.</li>
+</ol>
+<div class="ex"><strong>Cas Contoso University</strong>
+L'université fait tourner une application en <strong>microservices</strong> (découpée en cinq petits services indépendants). L'équipe centralise la télémétrie (Application Insights vers Azure Monitor) et corrèle les entrées d'une même requête : elle voit enfin les goulots d'étranglement. Le trafic explose à chaque rentrée : elle configure un <strong>scale-out</strong> automatique (ajout de machines) des niveaux web et base de données <em>avant</em> le pic. Enfin, le lien entre le niveau web et le service d'inscription repose sur un certificat peu sollicité, qui pourrait expirer sans que personne le voie : elle ajoute des <strong>tests synthétiques</strong> mensuels en production, avec alertes, et des <strong>tests de chaos</strong> dans son cycle de développement.</div>
+
+<h3>Principe 5 · Faire simple</h3>
+<p>Contre-intuitif mais central : <strong>la complexité est l'ennemie de la fiabilité</strong>. Souvent, c'est ce qu'on <em>retire</em> qui fiabilise : moins de pièces, moins de pannes possibles, moins de mauvaises configurations. Mais trop simplifier peut recréer un point de défaillance unique : c'est un équilibre.</p>
+<ol>
+  <li><strong>Simplifier les composants</strong> : n'ajouter une brique que si elle sert un objectif métier. Chaque composant critique en plus est un point d'échec potentiel de plus.</li>
+  <li><strong>Normaliser le SDLC</strong> (<em>Software Development Life Cycle</em>, cycle de vie du développement logiciel) : des standards clairs et documentés (style de code, bibliothèques, déploiement) appliqués par des <strong>vérifications automatisées</strong>, dont les <strong>portes de test</strong>, des étapes qui bloquent une mise en production si les tests échouent.</li>
+  <li><strong>Réduire la charge de développement et d'exploitation</strong> : s'appuyer sur les fonctionnalités fournies par la plateforme (des <strong>services managés</strong>, que le fournisseur exploite pour vous) plutôt que de tout coder soi-même. C'est éprouvé, et c'est moins de code maison à maintenir.</li>
+</ol>
+<div class="ex"><strong>Cas Contoso Travel</strong>
+Après le rachat d'une start-up de voyage, l'équipe hérite d'une application bancale. Elle <strong>supprime</strong> la fonction de commentaires que personne n'utilisait (les clients commentent sur les réseaux sociaux) : moins de code, aucun impact métier. Elle impose des standards et des tests automatisés à une base de code qui provoquait des incidents à chaque mise en production (retours arrière, correctifs à chaud, toute l'équipe mobilisée). Enfin, elle migre l'application vers un service managé (Azure App Service), ce qui supprime tout son code d'instrumentation maison et lui donne, clés en main, la mise à l'échelle automatique et la redondance.</div>
+
+<!-- ============================================================ -->
+<h2 id="zero-trust"><span class="num">5</span>Sécurité : du château fort au Zero Trust</h2>
+
+<div class="key"><strong>Ressource complémentaire</strong>
+Les parties 5 à 9 viennent du module « Explorer l'identité dans Microsoft Entra ID », recommandé en ressource supplémentaire. Il ne fait pas partie du parcours officiel du WAF, dont le module Sécurité n'a pas été collecté. Il approfondit le pilier Sécurité par l'angle le plus structurant : l'identité. Les concepts sont universels ; Microsoft Entra ID (le nouveau nom d'Azure Active Directory) sert d'exemple.</div>
+
+<h3>Le vieux modèle et pourquoi il ne tient plus</h3>
+<p>Longtemps, la sécurité a fonctionné comme un <strong>château fort</strong> : un gros mur, le <strong>pare-feu</strong>, autour du réseau de l'entreprise. On montre patte blanche à l'entrée (identifiant, mot de passe), et une fois dedans on a accès à presque tout. Dur à l'extérieur, mou à l'intérieur. Ce modèle s'effondre : les collaborateurs sont mobiles, les données sont dans le cloud et chez des prestataires <strong>SaaS</strong> (<em>Software as a Service</em>, logiciel loué en ligne), les appareils se multiplient. Surtout, <strong>un seul identifiant volé</strong>, par hameçonnage par exemple, suffit pour que l'attaquant se retrouve à l'intérieur avec accès à tout.</p>
+<div class="svg-wrap"><svg viewBox="0 0 760 250" role="img" aria-label="À gauche, le château fort : un mur unique autour de toutes les ressources. À droite, le Zero Trust : une stratégie centrale relie chaque ressource, vérifiée individuellement.">
+  <text x="190" y="30" text-anchor="middle" class="s-acc">Château fort (périmètre)</text>
+  <rect x="40" y="48" width="300" height="160" rx="14" fill="none" stroke="var(--muted)" stroke-width="5"/>
+  <rect x="70" y="78" width="110" height="40" rx="6" class="s-box"/>
+  <text x="125" y="103" text-anchor="middle" class="s-txt">Données</text>
+  <rect x="200" y="78" width="110" height="40" rx="6" class="s-box"/>
+  <text x="255" y="103" text-anchor="middle" class="s-txt">Applications</text>
+  <rect x="70" y="140" width="110" height="40" rx="6" class="s-box"/>
+  <text x="125" y="165" text-anchor="middle" class="s-txt">Serveurs</text>
+  <rect x="200" y="140" width="110" height="40" rx="6" class="s-box"/>
+  <text x="255" y="165" text-anchor="middle" class="s-txt">Postes</text>
+  <text x="190" y="232" text-anchor="middle" class="s-sub">Passé le pare-feu, tout est ouvert</text>
+  <line x1="378" y1="20" x2="378" y2="236" stroke="var(--border)" stroke-dasharray="4 4"/>
+  <text x="575" y="30" text-anchor="middle" class="s-acc">Zero Trust</text>
+  <line x1="575" y1="135" x2="475" y2="80" class="s-line"/>
+  <line x1="575" y1="135" x2="675" y2="80" class="s-line"/>
+  <line x1="575" y1="135" x2="475" y2="190" class="s-line"/>
+  <line x1="575" y1="135" x2="675" y2="190" class="s-line"/>
+  <rect x="420" y="60" width="110" height="40" rx="6" class="s-box-acc"/>
+  <text x="475" y="85" text-anchor="middle" class="s-txt">Données</text>
+  <rect x="620" y="60" width="110" height="40" rx="6" class="s-box-acc"/>
+  <text x="675" y="85" text-anchor="middle" class="s-txt">Applications</text>
+  <rect x="420" y="170" width="110" height="40" rx="6" class="s-box-acc"/>
+  <text x="475" y="195" text-anchor="middle" class="s-txt">Serveurs</text>
+  <rect x="620" y="170" width="110" height="40" rx="6" class="s-box-acc"/>
+  <text x="675" y="195" text-anchor="middle" class="s-txt">Postes</text>
+  <rect x="520" y="111" width="110" height="48" rx="6" class="s-box"/>
+  <text x="575" y="131" text-anchor="middle" class="s-txt" font-weight="700">Stratégie</text>
+  <text x="575" y="149" text-anchor="middle" class="s-txt" font-weight="700">centrale</text>
+  <text x="575" y="236" text-anchor="middle" class="s-sub">Chaque accès est vérifié, où que soit la ressource</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+
+<h3>Le Zero Trust : « ne jamais faire confiance, toujours vérifier »</h3>
+<p>Le <strong>Zero Trust</strong> renverse la logique. Il <strong>suppose qu'une violation est toujours possible</strong> et vérifie chaque demande comme si elle venait d'un réseau non maîtrisé, peu importe d'où elle vient. On ne protège plus un périmètre : on protège <strong>chaque ressource</strong>, individuellement, à partir d'une <strong>stratégie centrale</strong>. Il repose sur trois principes, à connaître par cœur :</p>
+<div class="table-wrap"><table>
+<tr><th>Principe</th><th>En clair</th><th>Mécanismes cités</th></tr>
+<tr><td><strong>Vérifier explicitement</strong></td><td>Toujours authentifier et autoriser à partir de tous les signaux disponibles ; ne jamais accorder un accès « parce qu'il l'avait avant »</td><td>Identité et localisation de l'utilisateur, intégrité de l'appareil, contexte de la charge de travail, classification de la donnée, comportement anormal</td></tr>
+<tr><td><strong>Utiliser le moindre privilège</strong></td><td>Donner juste les droits nécessaires, pas plus</td><td><strong>JIT</strong> (<em>Just-In-Time</em>, juste-à-temps : le droit n'est donné qu'au moment du besoin, puis retiré) ; <strong>JEA</strong> (<em>Just-Enough-Access</em>, accès juste suffisant : le strict minimum de permissions) ; stratégies adaptatives selon le risque</td></tr>
+<tr><td><strong>Supposer une violation</strong></td><td>Concevoir comme si l'attaquant était déjà entré</td><td>Réduire le rayon d'impact et bloquer le <strong>mouvement latéral</strong> (l'attaquant qui saute d'une machine à l'autre) : segmentation par réseau, utilisateur, appareil et application ; chiffrement de bout en bout de toutes les sessions ; analytique pour détecter les menaces</td></tr>
+</table></div>
+<div class="ex"><strong>Analogie · l'immeuble de bureaux</strong>
+Le château fort, c'est un badge qui ouvre la porte d'entrée de l'immeuble, puis toutes les portes. Le Zero Trust, c'est un badge contrôlé à chaque porte, qui n'ouvre que les bureaux utiles à votre travail (moindre privilège), parfois seulement pour la journée (JIT), avec des cloisons entre les étages pour qu'un intrus ne puisse pas tout visiter (segmentation).</div>
+
+<h3>Les six piliers du Zero Trust</h3>
+<p>Le Zero Trust s'applique à six domaines : <strong>identité, points de terminaison</strong> (<em>endpoints</em>, les appareils : postes, téléphones, objets connectés), <strong>données, applications, infrastructure, réseau</strong>. Chacun est à la fois une source de signal, un point de contrôle et une ressource à défendre.</p>
+<p>Son architecture : une <strong>stratégie de sécurité</strong> gouverne tout ; au cœur, un <strong>moteur de stratégie</strong> (<em>policy engine</em>) prend des décisions d'accès dynamiques à partir de signaux (intégrité de l'appareil, risque de la connexion). Les solutions d'<strong>IAM</strong> (gestion des identités et des accès) et de gestion des appareils font la vérification explicite. En bout de chaîne, un <strong>SIEM</strong> (qui centralise et corrèle les journaux de sécurité) et un <strong>XDR</strong> (<em>Extended Detection and Response</em>, détection et réponse étendues à tout le parc) assurent la détection et la réponse.</p>
+<div class="trap"><strong>Zero Trust n'est pas « MFA et c'est fini »</strong>
+Ajouter un second facteur d'authentification sert le premier principe, mais le Zero Trust, ce sont trois principes appliqués à six domaines : vérifier chaque accès, limiter les droits, et cloisonner comme si l'attaquant était déjà là. Ce n'est pas un produit qu'on achète, c'est une stratégie.</div>
+
+<h3>L'identité, nouveau plan de contrôle</h3>
+<p>Un <strong>plan de contrôle</strong> est à l'origine une notion réseau : le composant qui décide comment le trafic circule. Par extension, c'est ce qui dirige l'accès aux ressources selon des critères. Pourquoi l'identité l'est-elle devenue ? Parce que, face à la multitude de réseaux, d'appareils et d'applications, c'est le <strong>seul dénominateur commun</strong> : chaque utilisateur, partenaire externe, application et appareil en possède une. Si l'on ne sait pas qui est l'utilisateur, aucun autre contrôle n'a de sens.</p>
+<p>L'identité sert à quatre choses, les « 4 A » :</p>
+<div class="grid">
+  <div class="card"><h4>Authentification (AuthN)</h4><p>Prouver qui l'on est. « Qui es-tu ? »</p></div>
+  <div class="card"><h4>Autorisation (AuthZ)</h4><p>Décider ce qu'on a le droit de faire. « Qu'as-tu le droit de faire ? »</p></div>
+  <div class="card"><h4>Administration</h4><p>Gérer les identités dans le temps : création, modification, suppression, règles d'entreprise.</p></div>
+  <div class="card"><h4>Audit</h4><p>Tracer qui a fait quoi, quand, où et comment ; rendre compte, prouver la conformité.</p></div>
+</div>
+<p>Les deux premiers font entrer l'utilisateur ; les deux derniers relèvent directement de la <strong>gouvernance</strong>, et c'est là que l'identité rejoint le thème du cours (partie 8).</p>
+<p>Le module présente aussi le <strong>paysage des identités</strong> en cinq étapes : la posture Zero Trust ; les identités elles-mêmes (internes, partenaires, clients, décentralisées) ; les actions (authentifier, autoriser, administrer, auditer) ; l'utilisation (accéder aux applications et aux données, chiffrer, porter les licences) ; et la maintenance, résumée en « protéger, détecter, répondre ».</p>
+
+<!-- ============================================================ -->
+<h2 id="authn"><span class="num">6</span>Authentification : prouver qui on est</h2>
+
+<p>L'<strong>authentification</strong> (<strong>AuthN</strong>) consiste à valider qu'une identité est bien celle qu'elle prétend être : un utilisateur, mais aussi une application ou un appareil. Le degré de confiance qu'on en retire s'appelle le <strong>niveau d'assurance</strong>. Un mot de passe seul donne une assurance faible ; ajouter un deuxième facteur l'augmente fortement. C'est la <strong>MFA</strong> (<em>Multi-Factor Authentication</em>, authentification multifacteur) : quelque chose qu'on sait (un mot de passe) combiné à quelque chose qu'on possède (un téléphone) ou qu'on est (une empreinte).</p>
+<p>Le module décrit quatre capacités d'une bonne authentification : la <strong>commodité</strong> (si la connexion est pénible, les gens la contournent), les <strong>sources</strong> (d'où vient l'identité ; souvent plusieurs annuaires), les <strong>protocoles</strong> (standardiser sur des protocoles modernes et sûrs) et l'<strong>assurance</strong> (proscrire les comptes partagés, privilégier la MFA et l'authentification fondée sur le risque).</p>
+
+<h3>Fournisseur d'identité, SSO et fédération</h3>
+<ul>
+  <li>Un <strong>IdP</strong> (<em>Identity Provider</em>, fournisseur d'identité) est le système qui <strong>crée, gère et stocke</strong> les identités numériques et les vérifie par un ou plusieurs facteurs. Exemple : Microsoft Entra ID.</li>
+  <li>Le <strong>SSO</strong> (<em>Single Sign-On</em>, authentification unique) : une seule connexion auprès de l'IdP ouvre l'accès à plusieurs applications. Il réduit la « fatigue des mots de passe » et, en limitant les saisies d'identifiants, réduit aussi la <strong>surface d'attaque</strong>.</li>
+  <li>La <strong>fédération</strong> : un ensemble de domaines liés par une relation de confiance établie, portant sur l'authentification et presque toujours sur l'autorisation. C'est ce qui permet à un salarié d'une entreprise A de se connecter chez une entreprise B avec son identité d'origine.</li>
+</ul>
+<div class="ex"><strong>Analogie · le bracelet de festival</strong>
+L'IdP, c'est le guichet qui contrôle votre billet et votre pièce d'identité à l'entrée. Le SSO, c'est le bracelet qu'il vous remet : chaque scène le regarde au lieu de vous redemander vos papiers. La fédération, c'est un accord entre deux festivals pour reconnaître les bracelets l'un de l'autre.</div>
+
+<h3>Les protocoles : SAML, OAuth 2.0, OIDC</h3>
+<div class="table-wrap"><table>
+<tr><th>Protocole</th><th>Sert à</th><th>À retenir</th></tr>
+<tr><td><strong>SAML</strong> (<em>Security Assertion Markup Language</em>)</td><td>Authentification (et données d'autorisation) entre organisations</td><td>Standard ancien, en <strong>XML</strong>, très présent en entreprise. Échange des <strong>assertions</strong> de sécurité entre un IdP et un fournisseur de services (<strong>SP</strong>). Trois acteurs : le <em>Principal</em> (l'utilisateur ou l'appareil), l'IdP, le SP.</td></tr>
+<tr><td><strong>OAuth 2.0</strong></td><td><strong>Autorisation</strong></td><td>Sert à donner à une application l'accès à une ressource, pas à prouver l'identité.</td></tr>
+<tr><td><strong>OIDC</strong> (<em>OpenID Connect</em>)</td><td><strong>Authentification</strong></td><td>Couche posée au-dessus d'OAuth 2.0. Permet le SSO moderne, introduit le <strong>jeton d'ID</strong> (au format JSON) et un point d'accès <em>UserInfo</em>.</td></tr>
+</table></div>
+<p>Le module cite aussi <strong>WS-Fed</strong>, un autre protocole de fédération.</p>
+<div class="trap"><strong>Le piège OAuth / OIDC</strong>
+OAuth 2.0 = <strong>autorisation</strong> (accéder). OIDC = <strong>authentification</strong> (prouver qui on est), construit sur OAuth 2.0. Les confondre est une erreur d'examen fréquente.</div>
+
+<h3>Jetons et identité fondée sur les revendications</h3>
+<p>Après l'authentification, l'IdP ne répond pas « oui, c'est bon » : il émet un <strong>jeton</strong> (<em>token</em>), un petit paquet d'informations signé. Ce jeton contient des <strong>revendications</strong> (<em>claims</em>), de simples paires clé/valeur, par exemple <code>email = bob@contoso.com</code>. On fait confiance aux revendications parce qu'on fait confiance à leur <strong>émetteur</strong> ; si l'on ne fait pas confiance à l'émetteur, on ne croit pas les revendications.</p>
+<div class="svg-wrap"><svg viewBox="0 0 764 180" role="img" aria-label="Flux de revendications : l'utilisateur se connecte, l'IdP émet un jeton signé, l'application lit le jeton, puis autorise ou refuse.">
+  <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <rect x="4" y="16" width="168" height="74" rx="8" class="s-box"/>
+  <text x="88" y="46" text-anchor="middle" class="s-txt" font-weight="700">Utilisateur</text>
+  <text x="88" y="68" text-anchor="middle" class="s-sub">1. se connecte</text>
+  <rect x="200" y="16" width="168" height="74" rx="8" class="s-box-acc"/>
+  <text x="284" y="46" text-anchor="middle" class="s-txt" font-weight="700">IdP</text>
+  <text x="284" y="68" text-anchor="middle" class="s-sub">2. émet un jeton signé</text>
+  <rect x="396" y="16" width="168" height="74" rx="8" class="s-box"/>
+  <text x="480" y="46" text-anchor="middle" class="s-txt" font-weight="700">Application</text>
+  <text x="480" y="68" text-anchor="middle" class="s-sub">3. lit le jeton</text>
+  <rect x="592" y="16" width="168" height="74" rx="8" class="s-box-acc"/>
+  <text x="676" y="46" text-anchor="middle" class="s-txt" font-weight="700">Décision</text>
+  <text x="676" y="68" text-anchor="middle" class="s-sub">4. autorise ou refuse</text>
+  <line x1="174" y1="53" x2="196" y2="53" class="s-line" marker-end="url(#ar3)"/>
+  <line x1="370" y1="53" x2="392" y2="53" class="s-line" marker-end="url(#ar3)"/>
+  <line x1="566" y1="53" x2="588" y2="53" class="s-line" marker-end="url(#ar3)"/>
+  <rect x="4" y="116" width="756" height="44" rx="8" fill="none" stroke="var(--border)" stroke-dasharray="5 4"/>
+  <text x="382" y="143" text-anchor="middle" class="s-sub">Le jeton porte des revendications (clé = valeur), crues parce qu'on fait confiance à l'émetteur</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+
+<h3>Les trois jetons</h3>
+<div class="table-wrap"><table>
+<tr><th>Jeton</th><th>Flux</th><th>Rôle</th><th>En un mot</th></tr>
+<tr><td><strong>Jeton d'accès</strong> (<em>access token</em>)</td><td>OAuth 2.0</td><td>Donne à l'application l'accès à une ressource ou une API protégée. Durée de vie courte.</td><td>Accéder</td></tr>
+<tr><td><strong>Jeton d'actualisation</strong> (<em>refresh token</em>)</td><td>OAuth 2.0</td><td>Obtient un nouveau jeton d'accès quand l'ancien expire, sans redemander les identifiants.</td><td>Renouveler</td></tr>
+<tr><td><strong>Jeton d'ID</strong> (<em>ID token</em>)</td><td>OIDC</td><td>Permet à l'application d'authentifier l'utilisateur, de savoir qui il est.</td><td>Qui</td></tr>
+</table></div>
+<p>Ces jetons sont souvent des <strong>JWT</strong> (<em>JSON Web Token</em>, standard RFC 7519) : un objet <strong>JSON</strong> compact, <strong>signé numériquement</strong> par un secret ou par une paire de clés publique et privée. La signature garantit l'<strong>intégrité</strong> des revendications (personne ne les a trafiquées) et l'authenticité de l'émetteur.</p>
+<div class="formula">JWT = en-tête (alg, typ) + contenu (sub, name, aud…) + signature</div>
+<div class="trap"><strong>Signé n'est pas chiffré</strong>
+La signature prouve qu'un JWT n'a pas été modifié, elle ne cache pas son contenu. Un JWT peut <em>aussi</em> être chiffré pour la confidentialité, mais c'est une étape de plus. Intégrité et confidentialité sont deux lettres différentes de la triade CIA.</div>
+<p>Petit vocabulaire du module : une <strong>revendication</strong> est une paire clé/valeur dans le jeton ; une <strong>assertion</strong> est un paquet de données qui partage identité et sécurité entre domaines (le mot de SAML) ; l'<strong>augmentation</strong> consiste à ajouter des revendications au jeton, par exemple tirées des données RH.</p>
+
+<!-- ============================================================ -->
+<h2 id="authz"><span class="num">7</span>Autorisation : décider ce qu'on a le droit de faire</h2>
+
+<p>Une fois l'utilisateur authentifié, l'<strong>autorisation</strong> (<strong>AuthZ</strong>) détermine à quoi il a accès et ce qu'il peut en faire : quelles ressources, quelles données, quelles actions sur ces données. On authentifie <strong>d'abord</strong>, on autorise <strong>ensuite</strong>. Le principe directeur reste le moindre privilège.</p>
+<div class="ex"><strong>Analogie · l'hôtel</strong>
+À la réception, on vérifie votre pièce d'identité : c'est l'authentification. On vous remet une carte qui ouvre votre chambre, la salle de sport, mais pas les autres chambres : c'est l'autorisation. Être bien identifié ne donne pas le droit d'entrer partout.</div>
+<p>Le module distingue trois axes : le <strong>type de droit</strong> (au niveau de l'application, par groupes, par rôles ou attributs, ou par stratégie), les <strong>stratégies d'accès</strong> (l'ensemble des règles, en visant l'accès minimal) et l'<strong>exécution</strong> de ces règles (le plus souvent dans l'application elle-même via une API ; parfois par un proxy inverse ou une source de stratégie externe comme XACML, un langage standard de règles d'accès).</p>
+
+<h3>Les quatre modèles de contrôle d'accès</h3>
+<div class="table-wrap"><table>
+<tr><th>Modèle</th><th>Nom complet</th><th>Principe</th><th>Force et limite</th></tr>
+<tr><td><strong>ACL</strong></td><td><em>Access Control List</em>, liste de contrôle d'accès</td><td>Une liste explicite, par ressource, de qui a ou n'a pas accès</td><td>Précis, mais vite ingérable quand utilisateurs et ressources se multiplient</td></tr>
+<tr><td><strong>RBAC</strong></td><td><em>Role-Based Access Control</em>, contrôle par rôle</td><td>On donne les droits à des rôles (« comptable », « admin »), puis on affecte les rôles aux personnes</td><td>Le plus répandu ; bien plus simple à gérer que des droits individuels</td></tr>
+<tr><td><strong>ABAC</strong></td><td><em>Attribute-Based Access Control</em>, contrôle par attributs</td><td>La décision combine des attributs de l'utilisateur, de la ressource et de l'environnement</td><td>Plus fin et contextuel que RBAC</td></tr>
+<tr><td><strong>PBAC</strong></td><td><em>Policy-Based Access Control</em>, contrôle par stratégie</td><td>Combine le rôle métier de l'utilisateur avec des stratégies d'entreprise</td><td>Centralise la décision dans des règles</td></tr>
+</table></div>
+<div class="ex"><strong>Exemple résolu du cours · une règle ABAC</strong>
+« Autoriser l'accès à un fichier tagué <em>managers</em> uniquement si l'utilisateur a l'attribut <em>statut = manager</em>, entre 9 h et 17 h, un jour ouvré. » Trois familles d'attributs décident ensemble : l'utilisateur (statut), la ressource (le tag du fichier), l'environnement (l'heure et le jour). Un manager qui tente d'ouvrir le fichier un dimanche est refusé ; en RBAC pur, son rôle de manager aurait suffi.</div>
+<p>Le module cite enfin le <strong>contexte d'authentification</strong> d'Entra : exiger une sécurité renforcée pour une ressource sensible. Exemple : un site interne « menu du déjeuner » ouvert à tous, et un site « recette secrète » accessible seulement depuis un appareil géré par l'entreprise.</p>
+
+<!-- ============================================================ -->
+<h2 id="cycle-de-vie"><span class="num">8</span>Gouvernance des identités : administration, cycle de vie, audit</h2>
+
+<p>On arrive au cœur du thème du cours. Ce n'est pas tout de créer de bonnes identités : il faut les <strong>gérer dans la durée</strong>. C'est le rôle de l'<strong>administration</strong> (gérer les objets d'identité sur toute leur vie, à la main ou automatiquement) et surtout de la <strong>gouvernance</strong>.</p>
+
+<h3>L'histoire de Juan</h3>
+<div class="ex"><strong>Cas du cours · une identité mal gouvernée</strong>
+Juan, employé fictif, reçoit un compte à son arrivée. Il y travaille plusieurs années et obtient même un accès administrateur pour déployer une application. Puis il quitte l'entreprise, en bons termes. Mais son compte n'est jamais fermé : son responsable a oublié les démarches, et aucune gouvernance ne remarque que le compte ne sert plus et que Juan a disparu des effectifs RH. Un an plus tard, Juan se fait hameçonner ; comme il réutilisait un mot de passe proche entre ses usages personnel et professionnel, l'attaquant récupère de quoi se connecter. Résultat : une intrusion par un compte qui paraît parfaitement valide, avec des droits d'administrateur en prime.</div>
+<p>La leçon : sans <strong>déprovisionnement</strong> (retirer l'accès d'une identité qui n'en a plus besoin), un compte oublié, dit <strong>compte orphelin</strong>, devient une porte d'entrée grande ouverte.</p>
+
+<h3>Ce qu'est la gouvernance</h3>
+<div class="key"><strong>Définition de référence</strong>
+Le dictionnaire Merriam-Webster définit la gouvernance comme « l'acte ou le processus de superviser le contrôle et la direction » d'un système. Appliquée aux identités, l'idée-force est que <strong>créer une solution ne suffit jamais</strong> : il faut la superviser, mettre à jour les processus et retirer ce qui est obsolète, sinon le système se dégrade et finit par échouer.</div>
+<p>Dans le cas de Juan, une gouvernance saine aurait : recoupé régulièrement les comptes avec la liste des RH ; repéré la <strong>dernière connexion</strong> du compte ; vérifié qu'il avait encore besoin de tous ses droits (moindre privilège) ; imposé la rotation des mots de passe ou la MFA. Elle aurait fermé le compte orphelin avant qu'il ne serve d'entrée à l'attaquant.</p>
+
+<h3>Le cycle de vie des identités : Joiner-Mover-Leaver</h3>
+<p>La <strong>gestion du cycle de vie des identités</strong> est le fondement de la gouvernance. Elle vise à automatiser tout le parcours d'une identité numérique (à la main dans une petite structure, automatisé dès une taille moyenne). Elle part d'un <strong>système d'enregistrement</strong> (<em>system of record</em>), la source qui fait autorité : typiquement le <strong>SIRH</strong> (système d'information des ressources humaines), qui détient la vraie liste des employés. On compare cette source aux annuaires des applications et on résout les écarts.</p>
+<div class="svg-wrap"><svg viewBox="0 0 760 228" role="img" aria-label="Cycle Joiner-Mover-Leaver : à partir du système d'enregistrement (SIRH), rejoindre crée l'identité et les accès, bouger retire les anciens droits et ajoute les nouveaux, quitter retire les accès et ferme l'identité.">
+  <defs><marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <rect x="230" y="8" width="300" height="54" rx="8" class="s-box-acc"/>
+  <text x="380" y="31" text-anchor="middle" class="s-txt" font-weight="700">Système d'enregistrement</text>
+  <text x="380" y="50" text-anchor="middle" class="s-sub">(SIRH : la source qui fait foi)</text>
+  <line x1="300" y1="62" x2="110" y2="98" class="s-line" stroke-dasharray="4 4"/>
+  <line x1="380" y1="62" x2="380" y2="98" class="s-line" stroke-dasharray="4 4"/>
+  <line x1="460" y1="62" x2="650" y2="98" class="s-line" stroke-dasharray="4 4"/>
+  <rect x="10" y="100" width="200" height="100" rx="8" class="s-box"/>
+  <text x="110" y="126" text-anchor="middle" class="s-txt" font-weight="700">Rejoindre (Joiner)</text>
+  <text x="110" y="148" text-anchor="middle" class="s-sub">arrivée</text>
+  <text x="110" y="166" text-anchor="middle" class="s-sub">créer l'identité</text>
+  <text x="110" y="182" text-anchor="middle" class="s-sub">donner les accès</text>
+  <rect x="280" y="100" width="200" height="100" rx="8" class="s-box"/>
+  <text x="380" y="126" text-anchor="middle" class="s-txt" font-weight="700">Bouger (Mover)</text>
+  <text x="380" y="148" text-anchor="middle" class="s-sub">changement de poste</text>
+  <text x="380" y="166" text-anchor="middle" class="s-sub">retirer les anciens droits</text>
+  <text x="380" y="182" text-anchor="middle" class="s-sub">ajouter les nouveaux</text>
+  <rect x="550" y="100" width="200" height="100" rx="8" fill="var(--warn-soft)" stroke="var(--warn)"/>
+  <text x="650" y="126" text-anchor="middle" class="s-txt" font-weight="700">Quitter (Leaver)</text>
+  <text x="650" y="148" text-anchor="middle" class="s-sub">départ</text>
+  <text x="650" y="166" text-anchor="middle" class="s-sub">retirer les accès</text>
+  <text x="650" y="182" text-anchor="middle" class="s-sub">fermer l'identité</text>
+  <line x1="212" y1="150" x2="276" y2="150" class="s-line" marker-end="url(#ar4)"/>
+  <line x1="482" y1="150" x2="546" y2="150" class="s-line" marker-end="url(#ar4)"/>
+  <text x="650" y="220" text-anchor="middle" class="s-sub">le maillon raté chez Juan</text>
+</svg></div><p class="svg-hint">Faites glisser le schéma vers la gauche pour le voir en entier.</p>
+<ul>
+  <li><strong>Rejoindre</strong> : une personne arrive ; on crée son identité et on lui donne ses accès.</li>
+  <li><strong>Bouger</strong> : elle change de périmètre (des Ventes au Marketing, par exemple) ; on <strong>retire</strong> les droits devenus inutiles <strong>et</strong> on ajoute les nouveaux.</li>
+  <li><strong>Quitter</strong> : elle part ; on retire les accès et on ferme l'identité, sauf conservation pour audit ou enquête.</li>
+</ul>
+<div class="trap"><strong>L'étape oubliée : Bouger</strong>
+Au changement de poste, on pense à ajouter les nouveaux droits, rarement à retirer les anciens. Résultat : les droits s'accumulent au fil des mutations, et une personne finit par avoir bien plus que ce dont elle a besoin. C'est l'inverse exact du moindre privilège.</div>
+
+<h3>Les tâches courantes d'administration</h3>
+<div class="table-wrap"><table>
+<tr><th>Tâche</th><th>De quoi il s'agit</th></tr>
+<tr><td>Prolifération des identités</td><td>Les identités sont éparpillées dans plusieurs magasins (Active Directory, autres annuaires, comptes propres à chaque application)</td></tr>
+<tr><td>Provisionner / déprovisionner</td><td>Deux fonctions distinctes : créer les objets d'identité ; retirer l'accès (suppression, désactivation, retrait de droits)</td></tr>
+<tr><td>Synchronisation</td><td>Garder tous les systèmes d'identité à jour : à la main, de façon planifiée, ou déclenchée par des événements</td></tr>
+<tr><td>Mots de passe</td><td>Le support informatique reste souvent le point de contact pour les oublis</td></tr>
+<tr><td>Groupes</td><td>La forme la plus courante d'attribution des droits, mais coûteuse à gérer</td></tr>
+<tr><td>Droits applicatifs</td><td>Autorisations grossières (rôles) ou fines (attributs liés à l'identité)</td></tr>
+<tr><td>Libre-service et contrôle des modifications</td><td>L'utilisateur fait lui-même certaines demandes ; les changements suivent un circuit, manuel ou automatisé, avec ou sans validation</td></tr>
+</table></div>
+<p>Cette administration <strong>s'automatise</strong> : scripts PowerShell (commandes de forme verbe-nom, naturelles sous Windows), Azure CLI (syntaxe proche de Bash, naturelle sous Linux) et <strong>Microsoft Graph</strong>, l'API unique qui donne accès aux identités et aux données des services cloud de Microsoft. Le choix de l'outil dépend de l'environnement de l'équipe. Automatiser, c'est moins d'oublis manuels comme celui du compte de Juan.</p>
+
+<h3>L'audit : garder une trace</h3>
+<p>Dernier « A ». Journaliser chaque action (connexions, changements de mot de passe, configuration de la MFA…) sert à trois choses :</p>
+<div class="grid">
+  <div class="card"><h4>Détecter</h4><p>Repérer une attaque, passée ou en cours.</p></div>
+  <div class="card"><h4>Prouver et suivre</h4><p>Démontrer la conformité et retracer ce qu'a fait chaque identité.</p></div>
+  <div class="card"><h4>Déboguer</h4><p>Retrouver pourquoi un utilisateur légitime s'est vu refuser un accès, par exemple à cause d'une stratégie mal réglée.</p></div>
+</div>
+<p>Entra tient des journaux d'activité, de connexion, de provisionnement et d'audit. Ils alimentent des outils de supervision (Azure Monitor) et un <strong>SIEM</strong> (<em>Security Information and Event Management</em>), un système qui centralise et corrèle les journaux de sécurité pour lever l'alerte ; chez Microsoft, c'est Microsoft Sentinel.</p>
+
+<!-- ============================================================ -->
+<h2 id="ecosysteme"><span class="num">9</span>L'écosystème de l'identité</h2>
+
+<h3>Identité centralisée ou décentralisée</h3>
+<div class="table-wrap"><table>
+<tr><th></th><th>Centralisée</th><th>Décentralisée</th></tr>
+<tr><td><strong>Qui détient l'identité</strong></td><td>Une autorité unique : l'entreprise, par son IdP</td><td>L'individu lui-même</td></tr>
+<tr><td><strong>Sur quoi elle repose</strong></td><td>Un outil d'identité unique, local ou cloud (le modèle classique de l'IAM)</td><td>Des <strong>DID</strong> (<em>Decentralized Identifiers</em>) générés par l'utilisateur et ancrés dans des systèmes décentralisés (chaînes de blocs, registres)</td></tr>
+<tr><td><strong>Comment on l'utilise</strong></td><td>SSO, gestion unifiée</td><td>Une application <strong>portefeuille</strong> (<em>wallet</em>), qui est à l'identité ce que le navigateur est au web</td></tr>
+<tr><td><strong>Atout</strong></td><td>Visibilité, contrôle, gouvernance simplifiée</td><td>Maîtrise par l'utilisateur, résistance à la falsification</td></tr>
+</table></div>
+<div class="trap"><strong>Un mythe à corriger</strong>
+L'identité décentralisée ne met <strong>pas</strong> vos données personnelles sur une chaîne de blocs publique. Seuls des identifiants et des métadonnées non personnelles y sont ancrés ; les vraies données d'identité restent hors chaîne, chiffrées, sous le seul contrôle de l'utilisateur.</div>
+
+<h3>IAM, partenaires et clients</h3>
+<ul>
+  <li><strong>IAM</strong> (<em>Identity and Access Management</em>, gestion des identités et des accès) : la brique qui contrôle l'accès aux applications et aux données. Ses deux fonctions centrales sont l'authentification et l'autorisation. Fourni en service cloud, on parle d'<strong>IDaaS</strong> (<em>Identity as a Service</em>).</li>
+  <li><strong>B2B</strong> (<em>Business to Business</em>) : collaborer avec des partenaires sans gérer plusieurs identités pour la même personne. Le partenaire « apporte sa propre identité » : c'est son IdP qui la gère, vous ne gérez que son accès à vos ressources. Dans Entra, il apparaît comme <strong>utilisateur invité</strong>.</li>
+  <li><strong>B2C</strong> (<em>Business to Consumer</em>) : offrir un service au grand public. On parle de <strong>CIAM</strong> (<em>Customer Identity and Access Management</em>), qui doit tenir des millions de comptes et résister aux attaques massives : déni de service, <em>password spraying</em> (essayer quelques mots de passe courants sur beaucoup de comptes), force brute.</li>
+</ul>
+<p>Petit vocabulaire : une <strong>identité</strong> est un objet qui peut être authentifié (une personne, mais aussi une application ou un serveur) ; un <strong>compte</strong> est une identité avec des données associées ; un <strong>groupe</strong> rassemble des identités pour leur affecter des droits d'un coup ; un <strong>locataire</strong> (<em>tenant</em>) est l'instance d'Entra ID dédiée à une organisation.</p>
+
+<h3>Les briques Microsoft, en exemple</h3>
+<div class="table-wrap"><table>
+<tr><th>Brique</th><th>Où</th><th>Rôle</th></tr>
+<tr><td><strong>AD DS</strong> (<em>Active Directory Domain Services</em>)</td><td>Sur site</td><td>L'annuaire historique des entreprises : protocole LDAP, authentification Kerberos et NTLM, stratégies de groupe</td></tr>
+<tr><td><strong>Microsoft Entra ID</strong></td><td>Cloud</td><td>L'IAM cloud (Microsoft 365, portail Azure, applications SaaS). Synchronisé avec un AD DS, il donne une <strong>identité hybride</strong> : une seule identité, sur site et dans le cloud</td></tr>
+<tr><td><strong>Microsoft Entra Domain Services</strong></td><td>Cloud, managé</td><td>Un sous-ensemble d'AD DS fourni comme service, utile pour déplacer d'anciennes applications vers Azure sans les réécrire</td></tr>
+</table></div>
+<p>L'identité a enfin un volet <strong>licences et coûts</strong>, qui rejoint le pilier Optimisation des coûts. Les licences Entra ID P1 et P2 se distinguent notamment par <strong>PIM</strong> (<em>Privileged Identity Management</em>, gestion des accès à privilèges), qui demande la P2 ; les identités externes sont facturées en <strong>MAU</strong> (<em>Monthly Active Users</em>, utilisateurs actifs par mois). Un <em>abonnement</em> donne accès à des services cloud ; une <em>licence</em> donne à un compte le droit d'utiliser un service.</p>
+
+<!-- ============================================================ -->
+<h2 id="pieges"><span class="num">!</span>Les pièges, en une liste</h2>
+<ol>
+  <li>Réduire le SI à « l'informatique » : il englobe aussi les personnes, les procédures et les données.</li>
+  <li>Réduire la performance à la vitesse : un système rapide qui ne sert aucun objectif est sans valeur.</li>
+  <li>Croire que la gouvernance « fait » l'informatique : elle fixe qui décide, sur quels critères, et contrôle.</li>
+  <li>Vouloir maximiser les cinq piliers à la fois : pousser l'un se paie sur un autre, on arbitre selon les priorités.</li>
+  <li>Lire le « A » de la triade CIA comme « authentification » : c'est <em>Availability</em>, la disponibilité.</li>
+  <li>Confondre scalabilité (grandir) et élasticité (grandir et rétrécir automatiquement).</li>
+  <li>Inverser RTO (temps sans service) et RPO (données perdues), ou croire que le RPO se mesure en gigaoctets : il s'exprime en temps.</li>
+  <li>Confondre résilience (encaisser la panne en continuant de fonctionner) et récupération (revenir à la normale après un sinistre).</li>
+  <li>Se contenter d'un plan de reprise écrit : sans exercice, on découvre ses lacunes pendant la vraie panne.</li>
+  <li>Croire qu'ajouter des composants rend toujours plus fiable : la complexité est l'ennemie de la fiabilité, mais trop simplifier recrée un SPOF.</li>
+  <li>Multiplier les alertes : une alerte qui n'appelle aucune action précise, c'est du bruit.</li>
+  <li>Réduire le Zero Trust à la MFA, ou à un produit : ce sont trois principes appliqués à six domaines.</li>
+  <li>Confondre AuthN (qui es-tu ?) et AuthZ (qu'as-tu le droit de faire ?), ou en inverser l'ordre.</li>
+  <li>Dire qu'OAuth 2.0 authentifie : il autorise ; c'est OIDC, construit dessus, qui authentifie.</li>
+  <li>Mélanger les trois jetons : accès = accéder, actualisation = renouveler, ID = qui.</li>
+  <li>Croire qu'un JWT signé est confidentiel : la signature garantit l'intégrité, pas le secret.</li>
+  <li>Confondre RBAC (des droits attachés à des rôles) et ABAC (une décision fondée sur des attributs combinés, dont le contexte).</li>
+  <li>Oublier le « Bouger » du cycle Joiner-Mover-Leaver : les droits s'accumulent ; ou le « Quitter » : le compte devient orphelin.</li>
+  <li>Croire que l'identité décentralisée publie les données personnelles sur une chaîne de blocs.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="glossaire"><span class="num">≡</span>Glossaire des sigles</h2>
+<dl class="gloss">
+  <dt>ABAC</dt><dd><span class="full">Attribute-Based Access Control.</span> Contrôle d'accès par attributs : la décision combine des caractéristiques de l'utilisateur, de la ressource et du contexte (heure, jour, appareil).</dd>
+  <dt>ACL</dt><dd><span class="full">Access Control List.</span> Liste, attachée à une ressource, des personnes autorisées ou refusées. Simple mais lourde à grande échelle.</dd>
+  <dt>AD DS</dt><dd><span class="full">Active Directory Domain Services.</span> L'annuaire d'entreprise historique de Microsoft, installé sur site.</dd>
+  <dt>AuthN</dt><dd><span class="full">Authentication, authentification.</span> Prouver qui l'on est.</dd>
+  <dt>AuthZ</dt><dd><span class="full">Authorization, autorisation.</span> Décider ce qu'une identité vérifiée a le droit de faire.</dd>
+  <dt>B2B / B2C</dt><dd><span class="full">Business to Business / Business to Consumer.</span> Relation avec des entreprises partenaires / avec le grand public.</dd>
+  <dt>CIA (triade)</dt><dd><span class="full">Confidentiality, Integrity, Availability.</span> Confidentialité, intégrité, disponibilité : les trois propriétés que la sécurité protège.</dd>
+  <dt>CIAM</dt><dd><span class="full">Customer Identity and Access Management.</span> La gestion des identités des clients, à très grande échelle.</dd>
+  <dt>DevOps</dt><dd><span class="full">Development and Operations.</span> Rapprocher ceux qui développent et ceux qui exploitent : livraisons automatisées, observabilité, mises en production maîtrisées.</dd>
+  <dt>DID</dt><dd><span class="full">Decentralized Identifier.</span> Identifiant créé par l'utilisateur lui-même et ancré dans un registre décentralisé, base de l'identité décentralisée.</dd>
+  <dt>DR</dt><dd><span class="full">Disaster Recovery.</span> Reprise après sinistre : se remettre d'une perte majeure (région entière, données corrompues).</dd>
+  <dt>DSI</dt><dd>Direction des systèmes d'information : le service qui pilote l'informatique de l'entreprise.</dd>
+  <dt>IAM</dt><dd><span class="full">Identity and Access Management.</span> Gestion des identités et des accès : la brique qui authentifie et autorise.</dd>
+  <dt>IDaaS</dt><dd><span class="full">Identity as a Service.</span> L'IAM fourni comme service cloud.</dd>
+  <dt>IdP</dt><dd><span class="full">Identity Provider.</span> Fournisseur d'identité : il crée, stocke et vérifie les identités, puis émet des jetons.</dd>
+  <dt>JEA</dt><dd><span class="full">Just-Enough-Access.</span> Accès juste suffisant : le strict minimum de permissions.</dd>
+  <dt>JIT</dt><dd><span class="full">Just-In-Time.</span> Juste-à-temps : un droit accordé au moment du besoin, puis retiré.</dd>
+  <dt>JML</dt><dd><span class="full">Joiner-Mover-Leaver.</span> Rejoindre, bouger, quitter : les trois moments du cycle de vie d'une identité.</dd>
+  <dt>JSON</dt><dd><span class="full">JavaScript Object Notation.</span> Format de texte simple pour échanger des données structurées.</dd>
+  <dt>JWT</dt><dd><span class="full">JSON Web Token.</span> Jeton compact au format JSON, signé numériquement (RFC 7519).</dd>
+  <dt>MAU</dt><dd><span class="full">Monthly Active Users.</span> Utilisateurs actifs par mois, unité de facturation des identités externes.</dd>
+  <dt>MFA</dt><dd><span class="full">Multi-Factor Authentication.</span> Authentification à plusieurs facteurs : mot de passe plus téléphone ou empreinte, par exemple.</dd>
+  <dt>OAuth 2.0</dt><dd><span class="full">Open Authorization.</span> Protocole d'autorisation : donner à une application l'accès à une ressource.</dd>
+  <dt>OIDC</dt><dd><span class="full">OpenID Connect.</span> Couche d'authentification posée sur OAuth 2.0 ; introduit le jeton d'ID.</dd>
+  <dt>PBAC</dt><dd><span class="full">Policy-Based Access Control.</span> Contrôle d'accès par stratégie : rôle métier combiné à des règles d'entreprise.</dd>
+  <dt>PIM</dt><dd><span class="full">Privileged Identity Management.</span> Gestion des comptes à privilèges (administrateurs), chez Microsoft.</dd>
+  <dt>RBAC</dt><dd><span class="full">Role-Based Access Control.</span> Contrôle d'accès par rôle : les droits vont aux rôles, les rôles aux personnes. Le modèle le plus répandu.</dd>
+  <dt>ROI</dt><dd><span class="full">Return On Investment.</span> Retour sur investissement : ce que rapporte une dépense comparé à ce qu'elle coûte.</dd>
+  <dt>RPO</dt><dd><span class="full">Recovery Point Objective.</span> Quantité de données qu'on accepte de perdre, exprimée en temps.</dd>
+  <dt>RTO</dt><dd><span class="full">Recovery Time Objective.</span> Durée maximale tolérée pour rétablir le service.</dd>
+  <dt>SaaS</dt><dd><span class="full">Software as a Service.</span> Logiciel loué et utilisé en ligne, exploité par le fournisseur.</dd>
+  <dt>SAML</dt><dd><span class="full">Security Assertion Markup Language.</span> Standard XML d'échange d'assertions d'authentification entre un IdP et un fournisseur de services.</dd>
+  <dt>SDLC</dt><dd><span class="full">Software Development Life Cycle.</span> Cycle de vie du développement logiciel, de la conception à la mise en production.</dd>
+  <dt>SI</dt><dd>Système d'information : ressources humaines, matérielles, logicielles, données et procédures au service de l'organisation.</dd>
+  <dt>SIEM</dt><dd><span class="full">Security Information and Event Management.</span> Système qui centralise et corrèle les journaux de sécurité pour lever l'alerte.</dd>
+  <dt>SIRH</dt><dd>Système d'information des ressources humaines : la liste qui fait foi des employés.</dd>
+  <dt>SLA</dt><dd><span class="full">Service Level Agreement.</span> Contrat de niveau de service : engagement chiffré du fournisseur (par exemple un pourcentage de disponibilité).</dd>
+  <dt>SP</dt><dd><span class="full">Service Provider.</span> Fournisseur de services : l'application qui fait confiance à l'IdP.</dd>
+  <dt>SPOF</dt><dd><span class="full">Single Point Of Failure.</span> Point de défaillance unique : le composant dont la panne arrête tout.</dd>
+  <dt>SRE</dt><dd><span class="full">Site Reliability Engineer.</span> Ingénieur chargé de la fiabilité des systèmes en production.</dd>
+  <dt>SSO</dt><dd><span class="full">Single Sign-On.</span> Authentification unique : une connexion pour plusieurs applications.</dd>
+  <dt>WAF</dt><dd><span class="full">Well-Architected Framework.</span> La grille de qualité de Microsoft en cinq piliers. À ne pas confondre avec le pare-feu applicatif web, qui porte le même sigle.</dd>
+  <dt>XACML</dt><dd><span class="full">eXtensible Access Control Markup Language.</span> Langage standard pour écrire des règles d'accès.</dd>
+  <dt>XDR</dt><dd><span class="full">Extended Detection and Response.</span> Détection et réponse étendues à l'ensemble du parc.</dd>
+  <dt>Zero Trust</dt><dd>Confiance zéro : vérifier explicitement chaque accès, accorder le moindre privilège, supposer une violation.</dd>
+</dl>
+
+<!-- ============================================================ -->
+<h2 id="quiz"><span class="num">?</span>Quiz d'auto-évaluation</h2>
+<p>Répondez à voix haute avant d'ouvrir la réponse.</p>
+<details><summary>Pourquoi un SI est-il plus large que « l'informatique » de l'entreprise ?</summary><p>Parce qu'il englobe aussi les personnes, les procédures et les données, pas seulement les logiciels et les machines.</p></details>
+<details><summary>En une phrase : à quoi sert la gouvernance du SI ?</summary><p>À fixer qui décide, sur quels critères, et à contrôler que les décisions sont tenues, pour que le SI serve la stratégie de l'entreprise.</p></details>
+<details><summary>Un site très rapide que personne n'utilise est-il performant ?</summary><p>Techniquement peut-être, mais pas en valeur : il ne sert aucun objectif. La performance d'un SI combine le plan technique et le plan de valeur.</p></details>
+<details><summary>Avec l'image de la cible, que représentent la stratégie, les objectifs et les plans ?</summary><p>La stratégie est le cap, les objectifs sont la cible mesurable, les plans (dont les projets SI) sont la flèche. Aligner, c'est faire en sorte que la flèche touche le centre.</p></details>
+<details><summary>Citez les cinq piliers du WAF et l'objectif de chacun.</summary><p>Fiabilité : résilience et récupération. Sécurité : résister aux attaques (triade CIA, Zero Trust). Optimisation des coûts : ROI et contraintes financières. Excellence opérationnelle : qualité par des flux de travail standardisés (DevOps). Efficacité des performances : s'ajuster aux variations de la demande.</p></details>
+<details><summary>Pourquoi ne peut-on pas maximiser les cinq piliers ? Donnez un exemple.</summary><p>Parce que pousser un pilier se paie sur un autre. La banque qui duplique son service de paiement sur trois régions gagne en fiabilité, mais paie trois fois l'infrastructure et complique son exploitation. On arbitre selon les priorités de l'organisation.</p></details>
+<details><summary>Que veut dire le « A » de la triade CIA ?</summary><p><em>Availability</em>, la disponibilité. Les deux autres lettres : confidentialité et intégrité.</p></details>
+<details><summary>Différence entre RTO et RPO ? Donnez les exemples du cours.</summary><p>Le RTO est la durée maximale tolérée sans service (30 secondes : service rétabli en 30 secondes au plus). Le RPO est la quantité de données qu'on accepte de perdre, exprimée en temps (5 minutes : on perd au pire les 5 dernières minutes).</p></details>
+<details><summary>Citez les cinq principes de conception de la fiabilité.</summary><p>Concevoir pour les exigences métier, pour la résilience, pour la récupération, pour les opérations, et faire simple.</p></details>
+<details><summary>Qu'est-ce qu'un SPOF, et quelle approche le combat ?</summary><p>Un point de défaillance unique : le composant dont la panne arrête tout. On le combat par la redondance (actif-actif ou actif-passif, zones de disponibilité, géoréplication).</p></details>
+<details><summary>Quel élément n'a pas besoin de cible de fiabilité : un composant, un flux utilisateur, le système entier, ou le système de surveillance de la sécurité ?</summary><p>Le système de surveillance de la sécurité, d'après le quiz du support : il est extérieur à la charge de travail. Les trois autres niveaux ont besoin de cibles.</p></details>
+<details><summary>Que faire avant de tester l'impact d'une attaque par déni de service distribué (DDoS) ?</summary><p>Une analyse du mode d'échec : identifier où le système peut lâcher, avec quel rayon d'explosion et quelle intensité.</p></details>
+<details><summary>Pourquoi un plan de reprise après sinistre non testé est-il dangereux ?</summary><p>Parce qu'on ne découvre ses lacunes que pendant la vraie panne, quand il est trop tard. C'est ce qui arrive à Contoso dans le cas de la solution d'analytique.</p></details>
+<details><summary>Quelle est la bonne stratégie d'alerte, et quel test prouve qu'un système tient en mode dégradé ?</summary><p>Des alertes actionnables (et hiérarchisées, idéalement prédictives). Pour prouver le fonctionnement dégradé : simuler la panne d'un composant en production, c'est-à-dire un test de chaos.</p></details>
+<details><summary>En quoi « faire simple » améliore-t-il la fiabilité, et quel est le risque ?</summary><p>Moins de composants, c'est moins de pannes possibles et moins d'erreurs de configuration, une gestion et un dépannage plus faciles. Mais trop simplifier peut recréer un point de défaillance unique.</p></details>
+<details><summary>Pourquoi le modèle du château fort ne suffit-il plus ?</summary><p>Le périmètre s'est dissous (cloud, mobilité, SaaS), et un seul identifiant volé donne accès à tout l'intérieur.</p></details>
+<details><summary>Citez les trois principes du Zero Trust.</summary><p>Vérifier explicitement, utiliser le moindre privilège (JIT, JEA), supposer une violation (segmentation, chiffrement de bout en bout, analytique).</p></details>
+<details><summary>Pourquoi dit-on que l'identité est le « plan de contrôle » ?</summary><p>Parce que c'est le seul point commun à tous les utilisateurs, appareils et applications : sans savoir qui est l'utilisateur, aucun autre contrôle n'a de sens.</p></details>
+<details><summary>Quels sont les « 4 A » de l'identité, et lesquels relèvent de la gouvernance ?</summary><p>Authentification, autorisation, administration, audit. Les deux derniers relèvent directement de la gouvernance.</p></details>
+<details><summary>OAuth 2.0, OIDC, SAML : qui fait quoi ?</summary><p>OAuth 2.0 autorise (donne accès à une ressource). OIDC authentifie, en s'appuyant sur OAuth 2.0, et émet un jeton d'ID. SAML est un standard XML plus ancien qui échange des assertions entre un IdP et un fournisseur de services.</p></details>
+<details><summary>À quoi servent le jeton d'accès, le jeton d'actualisation et le jeton d'ID ?</summary><p>Le jeton d'accès permet d'accéder à une ressource (courte durée) ; le jeton d'actualisation en obtient un nouveau sans se reconnecter ; le jeton d'ID dit qui est l'utilisateur.</p></details>
+<details><summary>Que garantit la signature d'un JWT ?</summary><p>L'intégrité des revendications (elles n'ont pas été modifiées) et l'authenticité de l'émetteur. Pas la confidentialité : pour cela, il faut en plus chiffrer.</p></details>
+<details><summary>Comparez RBAC et ABAC en une phrase chacun.</summary><p>RBAC : les droits sont attachés à des rôles qu'on affecte aux personnes. ABAC : la décision dépend d'attributs combinés de l'utilisateur, de la ressource et de l'environnement.</p></details>
+<details><summary>Que retient-on de l'histoire de Juan, et quel maillon du cycle de vie a manqué ?</summary><p>Un compte non fermé au départ devient une porte d'entrée qui paraît valide. Le maillon raté est « Quitter » (le déprovisionnement). Une gouvernance aurait recoupé les comptes avec les RH, regardé la dernière connexion, vérifié les droits et imposé la MFA.</p></details>
+<details><summary>Pourquoi l'étape « Bouger » est-elle risquée ?</summary><p>Parce qu'on ajoute les nouveaux droits sans retirer les anciens : les privilèges s'accumulent, à l'opposé du moindre privilège.</p></details>
+<details><summary>Qu'est-ce qu'un système d'enregistrement ?</summary><p>La source qui fait autorité sur les identités, typiquement le SIRH. On la compare aux annuaires des applications pour corriger les écarts.</p></details>
+<details><summary>L'identité décentralisée met-elle les données personnelles sur une chaîne de blocs ?</summary><p>Non. Seuls des identifiants et des métadonnées non personnelles y sont ancrés ; les données d'identité restent hors chaîne, chiffrées, sous le contrôle de l'utilisateur.</p></details>
+
+<footer>
+  <p>Synthèse du cours « Gouvernance et performance d'un SI » (EPSI), rédigé à partir du support e-learning : le parcours Microsoft Learn « Créer d'excellentes solutions avec Microsoft Azure Well-Architected Framework » (modules sur les piliers et sur la fiabilité) et, en ressource complémentaire, le module « Explorer l'identité dans Microsoft Entra ID » (parties 5 à 9). Les réponses aux quiz des modules ont été reprises dans le quiz ci-dessus. Les analogies de l'immeuble, du festival et de l'hôtel, ainsi que l'explication de la file de messages, sont ajoutées pour la révision et ne viennent pas du support.</p>
+  <p>Non couvert : les modules Optimisation des coûts, Excellence opérationnelle, Efficacité des performances et Sécurité du parcours WAF n'ont pas été collectés. Pour ces piliers, la fiche ne contient que leur présentation générale. Les parties I et II du support de cours, qui précèdent l'alignement stratégique, n'ont pas non plus été fournies.</p>
+  <p>Mise à jour : 17 novembre 2026.</p>
+</footer>
+
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('themeBtn');
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem('theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
